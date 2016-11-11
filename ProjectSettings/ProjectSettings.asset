@@ -343,7 +343,8 @@ PlayerSettings:
   psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    7: APPADVISORY_LEADERBOARD;VSLEADERBOARD_ENABLE_ANDROID
   metroPackageName: SpinTheCircle
   metroPackageVersion: 
   metroCertificatePath: 

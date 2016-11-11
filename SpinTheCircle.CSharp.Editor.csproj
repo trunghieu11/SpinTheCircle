@@ -106,6 +106,15 @@
     <Reference Include="DOTweenEditor">
       <HintPath>Assets\Demigiant\DOTween\Editor\DOTweenEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Google.IOSResolver">
+      <HintPath>Assets\PlayServicesResolver\Editor\Google.IOSResolver.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.JarResolver">
+      <HintPath>Assets\PlayServicesResolver\Editor\Google.JarResolver.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.VersionHandler">
+      <HintPath>Assets\PlayServicesResolver\Editor\Google.VersionHandler.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="SpinTheCircle.CSharp.csproj">
@@ -114,6 +123,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSAndroidSetupUI.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSDependencies.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSDocsUI.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSIOSSetupUI.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSPostBuild.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSProjectSettings.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSStrings.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSUpgrader.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\GPGSUtil.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\NearbyConnectionUI.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\PlistBuddyHelper.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Elements.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Lexer.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Objects.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\PBXProject.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Parser.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Sections.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Serializer.cs" />
+    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Utils.cs" />
     <Compile Include="Assets\SpinTheCircle\Editor\Welcome.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDInspectorGUI.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDUtility.cs" />
@@ -126,6 +154,11 @@
     <None Include="Assets\Demigiant\DOTween\DOTween50.xml" />
     <None Include="Assets\Demigiant\DOTween\Editor\DOTweenEditor.XML" />
     <None Include="Assets\Demigiant\DOTween\readme.txt" />
+    <None Include="Assets\GooglePlayGames\Editor\template-AndroidManifest.txt" />
+    <None Include="Assets\GooglePlayGames\Editor\template-Constants.txt" />
+    <None Include="Assets\GooglePlayGames\Editor\template-GameInfo.txt" />
+    <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver.txt" />
+    <None Include="Assets\Plugins\Android\MainLibProj\AndroidManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
