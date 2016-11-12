@@ -11,7 +11,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Eleven
-  productName: SpinTheCircle
+  productName: Bouncing Ball
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenStyle: 0
@@ -165,8 +165,8 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: C:/Users/trunghieu11/Documents/Unity Projects/SpinTheCircle/bouncingball.keystore
+  AndroidKeyaliasName: bouncingball
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
   androidEnableBanner: 0
@@ -194,7 +194,7 @@ PlayerSettings:
       m_Width: 144
       m_Height: 144
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 89e58abcd7cd0a5448ef6777964eae09, type: 3}
+      m_Icon: {fileID: 2800000, guid: 59f04d240c2b88f45918ba18c4aa73bf, type: 3}
       m_Width: 96
       m_Height: 96
     - serializedVersion: 2
@@ -370,6 +370,7 @@ PlayerSettings:
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols:
+    4: 
     7: APPADVISORY_LEADERBOARD;VSLEADERBOARD_ENABLE_ANDROID
   metroPackageName: SpinTheCircle
   metroPackageVersion: 
