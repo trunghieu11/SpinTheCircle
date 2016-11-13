@@ -71,9 +71,6 @@ namespace GooglePlayGames.Editor
         /// <summary>Property key for project settings.</summary>
         public const string IOSSETUPDONEKEY = "ios.SetupDone";
 
-        /// <summary>Property key for plugin version.</summary>
-        public const string PLUGINVERSIONKEY = "proj.pluginVersion";
-
         /// <summary>Property key for nearby settings done.</summary>
         public const string NEARBYSETUPDONEKEY = "android.NearbySetupDone";
 
@@ -99,7 +96,7 @@ namespace GooglePlayGames.Editor
         private const string IOSBUNDLEIDPLACEHOLDER = "__BUNDLEID__";
 
         /// <summary>Constant for token replacement</summary>
-        private const string PLUGINVERSIONPLACEHOLDER = "__PLUGIN_VERSION__";
+        private const string TOKENPERMISSIONSHOLDER = "__TOKEN_PERMISSIONS__";
 
         /// <summary>Constant for require google plus token replacement</summary>
         private const string REQUIREGOOGLEPLUSPLACEHOLDER = "__REQUIRE_GOOGLE_PLUS__";
@@ -122,6 +119,13 @@ namespace GooglePlayGames.Editor
         private const string GameInfoPath = "Assets/GooglePlayGames/GameInfo.cs";
 
         /// <summary>
+        /// The token permissions to add if needed.
+        /// </summary>
+        private const string TokenPermissions =
+            "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>\n" +
+            "<uses-permission android:name=\"android.permission.USE_CREDENTIALS\"/>";
+
+        /// <summary>
         /// The map of replacements for filling in code templates.  The
         /// key is the string that appears in the template as a placeholder,
         /// the value is the key into the GPGSProjectSettings.
@@ -135,8 +139,8 @@ namespace GooglePlayGames.Editor
                 { WEBCLIENTIDPLACEHOLDER, WEBCLIENTIDKEY },
                 { IOSCLIENTIDPLACEHOLDER, IOSCLIENTIDKEY },
                 { IOSBUNDLEIDPLACEHOLDER, IOSBUNDLEIDKEY },
-                { REQUIREGOOGLEPLUSPLACEHOLDER, REQUIREGOOGLEPLUSKEY },
-                { PLUGINVERSIONPLACEHOLDER, PLUGINVERSIONKEY}
+                { TOKENPERMISSIONSHOLDER, TOKENPERMISSIONKEY },
+                { REQUIREGOOGLEPLUSPLACEHOLDER, REQUIREGOOGLEPLUSKEY }
             };
 
         /// <summary>
@@ -457,7 +461,8 @@ namespace GooglePlayGames.Editor
         /// <summary>
         /// Generates the android manifest.
         /// </summary>
-        public static void GenerateAndroidManifest()
+        /// <param name="needTokenPermissions">If set to <c>true</c> need token permissions.</param>
+        public static void GenerateAndroidManifest(bool needTokenPermissions)
         {
             string destFilename = GPGSUtil.SlashesToPlatformSeparator(
                                       "Assets/Plugins/Android/MainLibProj/AndroidManifest.xml");
@@ -467,6 +472,16 @@ namespace GooglePlayGames.Editor
 
             Dictionary<string, string> overrideValues =
                 new Dictionary<string, string>();
+
+            if (!needTokenPermissions)
+            {
+                overrideValues[TOKENPERMISSIONKEY] = string.Empty;
+                overrideValues[WEBCLIENTIDPLACEHOLDER] = string.Empty;
+            }
+            else
+            {
+                overrideValues[TOKENPERMISSIONKEY] = TokenPermissions;
+            }
 
             foreach (KeyValuePair<string, string> ent in replacements)
             {

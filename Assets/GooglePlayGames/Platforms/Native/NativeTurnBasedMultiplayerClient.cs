@@ -103,7 +103,6 @@ namespace GooglePlayGames.Native
                     if (result.Status() != Cwrapper.CommonErrorStatus.UIStatus.VALID)
                     {
                         callback((UIStatus)result.Status(), null);
-                        return;
                     }
 
                     using (var configBuilder = TurnBasedMatchConfigBuilder.Create())
@@ -301,6 +300,7 @@ namespace GooglePlayGames.Native
 
             match.ReferToMe();
             Callbacks.AsCoroutine(WaitForLogin(()=>
+                
                 {currentDelegate(match.AsTurnBasedMatch(mNativeClient.GetUserId()), shouldAutolaunch);
                     match.ForgetMe();}));
         }

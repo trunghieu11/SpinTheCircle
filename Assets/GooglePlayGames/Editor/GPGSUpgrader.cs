@@ -33,10 +33,10 @@ namespace GooglePlayGames.Editor
         static GPGSUpgrader()
         {
             string prevVer = GPGSProjectSettings.Instance.Get(GPGSUtil.LASTUPGRADEKEY, "00000");
-            if (!prevVer.Equals(PluginVersion.VersionKey))
+            if (prevVer != PluginVersion.VersionKey)
             {
                 // if this is a really old version, upgrade to 911 first, then 915
-                if (!prevVer.Equals(PluginVersion.VersionKeyCPP))
+                if (prevVer != PluginVersion.VersionKeyCPP)
                 {
                     prevVer = Upgrade911(prevVer);
                 }
@@ -52,11 +52,8 @@ namespace GooglePlayGames.Editor
 
                 prevVer = Upgrade931(prevVer);
 
-                prevVer = Upgrade935(prevVer);
-
                 // there is no migration needed to 930+
-                if (!prevVer.Equals(PluginVersion.VersionKey))
-                {
+                if (prevVer != PluginVersion.VersionKey) {
                     Debug.Log("Upgrading from format version " + prevVer + " to " + PluginVersion.VersionKey);
                     prevVer = PluginVersion.VersionKey;
                 }
@@ -68,8 +65,6 @@ namespace GooglePlayGames.Editor
             }
 
             GPGSProjectSettings.Instance.Set(GPGSUtil.LASTUPGRADEKEY, prevVer);
-            GPGSProjectSettings.Instance.Set(GPGSUtil.PLUGINVERSIONKEY,
-                PluginVersion.VersionString);
             GPGSProjectSettings.Instance.Save();
 
             // clean up duplicate scripts if Unity 5+
@@ -80,8 +75,7 @@ namespace GooglePlayGames.Editor
                 string[] paths =
                     {
                         "Assets/GooglePlayGames",
-                        "Assets/Plugins/Android",
-                        "Assets/PlayServicesResolver"
+                        "Assets/Plugins/Android"
                     };
                 foreach (string p in paths)
                 {
@@ -104,7 +98,7 @@ namespace GooglePlayGames.Editor
             // Check that there is a AndroidManifest.xml file
             if (!GPGSUtil.AndroidManifestExists())
             {
-                GPGSUtil.GenerateAndroidManifest();
+                GPGSUtil.GenerateAndroidManifest(false);
             }
 
             AssetDatabase.Refresh();
@@ -139,61 +133,6 @@ namespace GooglePlayGames.Editor
             {
                 CleanDuplicates(s);
             }
-        }
-
-        /// <summary>
-        /// Upgrade to 0.9.35
-        /// </summary>
-        /// <remarks>
-        /// This cleans up some unused files mostly related to the improved jar resolver.
-        /// </remarks>
-        /// <param name="prevVer">Previous ver.</param>
-        private static string Upgrade935(string prevVer)
-        {
-            string[] obsoleteFiles =
-                {
-                "Assets/GooglePlayGames/Editor/CocoaPodHelper.cs",
-                "Assets/GooglePlayGames/Editor/CocoaPodHelper.cs.meta",
-                "Assets/GooglePlayGames/Editor/GPGSInstructionWindow.cs",
-                "Assets/GooglePlayGames/Editor/GPGSInstructionWindow.cs.meta",
-                "Assets/GooglePlayGames/Editor/Podfile.txt",
-                "Assets/GooglePlayGames/Editor/Podfile.txt.meta",
-                "Assets/GooglePlayGames/Editor/cocoapod_instructions",
-                "Assets/GooglePlayGames/Editor/cocoapod_instructions.meta",
-                "Assets/GooglePlayGames/Editor/ios_instructions",
-                "Assets/GooglePlayGames/Editor/ios_instructions.meta",
-
-                "Assets/PlayServicesResolver/Editor/DefaultResolver.cs",
-                "Assets/PlayServicesResolver/Editor/DefaultResolver.cs.meta",
-                "Assets/PlayServicesResolver/Editor/IResolver.cs",
-                "Assets/PlayServicesResolver/Editor/IResolver.cs.meta",
-                "Assets/PlayServicesResolver/Editor/JarResolverLib.dll",
-                "Assets/PlayServicesResolver/Editor/JarResolverLib.dll.meta",
-                "Assets/PlayServicesResolver/Editor/PlayServicesResolver.cs",
-                "Assets/PlayServicesResolver/Editor/PlayServicesResolver.cs.meta",
-                "Assets/PlayServicesResolver/Editor/ResolverVer1_1.cs",
-                "Assets/PlayServicesResolver/Editor/ResolverVer1_1.cs.meta",
-                "Assets/PlayServicesResolver/Editor/SampleDependencies.cs",
-                "Assets/PlayServicesResolver/Editor/SampleDependencies.cs.meta",
-                "Assets/PlayServicesResolver/Editor/SettingsDialog.cs",
-                "Assets/PlayServicesResolver/Editor/SettingsDialog.cs.meta",
-
-                "Assets/Plugins/Android/play-services-plus-8.4.0.aar",
-                "Assets/PlayServicesResolver/Editor/play-services-plus-8.4.0.aar.meta",
-
-                // not an obsolete file, but delete the cache since the schema changed.
-                "ProjectSettings/GoogleDependencyGooglePlayGames.xml"
-            };
-            foreach (string file in obsoleteFiles)
-            {
-                if (File.Exists(file))
-                {
-                    Debug.Log("Deleting obsolete file: " + file);
-                    File.Delete(file);
-                }
-            }
-
-            return PluginVersion.VersionKey;
         }
 
         /// <summary>
@@ -248,17 +187,12 @@ namespace GooglePlayGames.Editor
                 "Assets/GooglePlayGames/Platforms/Android/Gms/Games/Stats/StatsObject.cs.meta"
             };
 
-            // only delete these if we are not version 0.9.34
-            if (string.Compare(PluginVersion.VersionKey, PluginVersion.VersionKeyJNIStats,
-                               System.StringComparison.Ordinal) <= 0)
+            foreach (string file in obsoleteFiles)
             {
-                foreach (string file in obsoleteFiles)
+                if (File.Exists(file))
                 {
-                    if (File.Exists(file))
-                    {
-                        Debug.Log("Deleting obsolete file: " + file);
-                        File.Delete(file);
-                    }
+                    Debug.Log("Deleting obsolete file: " + file);
+                    File.Delete(file);
                 }
             }
 

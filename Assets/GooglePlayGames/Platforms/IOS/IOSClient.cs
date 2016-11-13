@@ -51,17 +51,10 @@ namespace GooglePlayGames.IOS
         /// Creates the token client.
         /// </summary>
         /// <returns>The token client.</returns>
-        /// <param name="playerId">not used for iOS</param>
         /// <param name="reset">not used for iOS</param>
-        public TokenClient CreateTokenClient(string playerId, bool reset)
+        public TokenClient CreateTokenClient(bool reset)
         {
             return new IOSTokenClient();
-        }
-
-        public void GetPlayerStats(IntPtr apiClientPtr,
-            Action<CommonStatusCodes, PlayerStats> callback) {
-            throw new InvalidOperationException(
-                "The native API should be called for iOS");
         }
     }
 }

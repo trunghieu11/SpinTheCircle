@@ -69,6 +69,8 @@ namespace GooglePlayGames.Native
 
         private string rationale;
 
+        private int needGPlusWarningFreq = 100000;
+        private int needGPlusWarningCount = 0;
         private int webclientWarningFreq = 100000;
         private int noWebClientIdWarningCount = 0;
 
@@ -79,10 +81,6 @@ namespace GooglePlayGames.Native
             this.mConfiguration = Misc.CheckNotNull(configuration);
             this.clientImpl = clientImpl;
             this.rationale = configuration.PermissionRationale;
-            if (string.IsNullOrEmpty(this.rationale))
-            {
-                this.rationale = "Select email address to send to this game or hit cancel to not share.";
-            }
         }
 
         private GameServices GameServices()
@@ -195,10 +193,6 @@ namespace GooglePlayGames.Native
                         {
                             builder.RequireGooglePlus();
                         }
-                        string[] scopes = mConfiguration.Scopes;
-                        for (int i = 0; i < scopes.Length; i++) {
-                            builder.AddOauthScope(scopes[i]);
-                        }
                         Debug.Log("Building GPG services, implicitly attempts silent auth");
                         mAuthState = AuthState.SilentPending;
                         mServices = builder.Build(config);
@@ -225,8 +219,7 @@ namespace GooglePlayGames.Native
                         }
 
                         mAuthState = AuthState.SilentPending;
-                        mTokenClient = clientImpl.CreateTokenClient(
-                            (mUser == null) ? null : mUser.id, false);
+                        mTokenClient = clientImpl.CreateTokenClient(false);
                     }
                 }
             }
@@ -254,20 +247,10 @@ namespace GooglePlayGames.Native
 
             bool shouldAutolaunch = eventType == Types.MultiplayerEvent.UPDATED_FROM_APP_LAUNCH;
 
-            // Copy the invitation into managed memory.
-            Invitation invite = invitation.AsInvitation();
-            PlayGamesHelperObject.RunOnGameThread(() =>
-                currentHandler(invite, shouldAutolaunch));
+            currentHandler(invitation.AsInvitation(), shouldAutolaunch);
         }
 
-        /// <summary>
-        /// Gets the user's email.
-        /// </summary>
-        /// <remarks>The email address returned is selected by the user from the accounts present
-        /// on the device. There is no guarantee this uniquely identifies the player.
-        /// For unique identification use the id property of the local player.
-        /// The user can also choose to not select any email address, meaning it is not
-        /// available.</remarks>
+        /// <summary>Gets the user email.</summary>
         /// <returns>The user email or null if not authenticated or the permission is
         /// not available.</returns>
         public string GetUserEmail()
@@ -278,35 +261,19 @@ namespace GooglePlayGames.Native
                 return null;
             }
 
-            mTokenClient.SetRationale(rationale);
-            return mTokenClient.GetEmail();
-        }
-
-        /// <summary>
-        /// Gets the user's email with a callback.
-        /// </summary>
-        /// <remarks>The email address returned is selected by the user from the accounts present
-        /// on the device. There is no guarantee this uniquely identifies the player.
-        /// For unique identification use the id property of the local player.
-        /// The user can also choose to not select any email address, meaning it is not
-        /// available.</remarks>
-        /// <param name="callback">The callback with a status code of the request,
-        /// and string which is the email. It can be null.</param>
-        public void GetUserEmail(Action<CommonStatusCodes, string> callback)
-        {
-            if (!this.IsAuthenticated())
+            if(!GameInfo.RequireGooglePlus())
             {
-                Debug.Log("Cannot get API client - not authenticated");
-                if (callback != null)
+                //don't spam the log, only do this every so often
+                if (needGPlusWarningCount++ % needGPlusWarningFreq == 0)
                 {
-                    PlayGamesHelperObject.RunOnGameThread(() =>
-                        callback(CommonStatusCodes.SignInRequired, null));
-                    return;
+                    Debug.LogError("RequiresGooglePlus not set, cannot request email.");
+                    // avoid int overflow
+                    needGPlusWarningCount = (needGPlusWarningCount/ needGPlusWarningFreq) + 1;
                 }
+                return null;
             }
             mTokenClient.SetRationale(rationale);
-            mTokenClient.GetEmail((status, email) =>
-                PlayGamesHelperObject.RunOnGameThread(()=>callback(status,email)));
+            return mTokenClient.GetEmail();
         }
 
         /// <summary>Gets the access token currently associated with the Unity activity.</summary>
@@ -341,14 +308,14 @@ namespace GooglePlayGames.Native
         /// <param name="idTokenCallback"> A callback to be invoked after token is retrieved. Will be passed null value
         /// on failure. </param>
         /// <returns>The identifier token.</returns>
+
         [Obsolete("Use GetServerAuthCode() then exchange it for a token")]
         public void GetIdToken(Action<string> idTokenCallback)
         {
             if (!this.IsAuthenticated())
             {
                 Debug.Log("Cannot get API client - not authenticated");
-                PlayGamesHelperObject.RunOnGameThread(() =>
-                    idTokenCallback(null));
+                idTokenCallback(null);
             }
 
             if(!GameInfo.WebClientIdInitialized())
@@ -360,12 +327,10 @@ namespace GooglePlayGames.Native
                     // avoid int overflow
                     noWebClientIdWarningCount = (noWebClientIdWarningCount/ webclientWarningFreq) + 1;
                 }
-                PlayGamesHelperObject.RunOnGameThread(() =>
-                    idTokenCallback(null));
+                idTokenCallback(null);
             }
             mTokenClient.SetRationale(rationale);
-            mTokenClient.GetIdToken(GameInfo.WebClientId,
-                AsOnGameThreadCallback(idTokenCallback));
+            mTokenClient.GetIdToken(GameInfo.WebClientId,idTokenCallback);
         }
 
         /// <summary>
@@ -389,11 +354,7 @@ namespace GooglePlayGames.Native
                 // Fill in the code & call the callback.
                 if (callback != null)
                 {
-                    // copy the auth code into managed memory before posting
-                    // the callback.
-                    string authCode = serverAuthCodeResponse.Code();
-                    PlayGamesHelperObject.RunOnGameThread(() =>
-                        callback(responseCode, authCode));
+                    callback(responseCode, serverAuthCodeResponse.Code());
                 }
             });
         }
@@ -414,16 +375,14 @@ namespace GooglePlayGames.Native
             if (!IsAuthenticated())
             {
                 GooglePlayGames.OurUtils.Logger.d("Cannot loadFriends when not authenticated");
-                PlayGamesHelperObject.RunOnGameThread(() =>
-                    callback(false));
+                callback(false);
                 return;
             }
 
             // avoid calling excessively
             if (mFriends != null)
             {
-                PlayGamesHelperObject.RunOnGameThread(() =>
-                    callback(true));
+                callback(true);
                 return;
             }
 
@@ -433,16 +392,13 @@ namespace GooglePlayGames.Native
                         status == ResponseStatus.SuccessWithStale)
                     {
                         mFriends = players;
-                        PlayGamesHelperObject.RunOnGameThread(() =>
-                            callback(true));
+                         callback(true);
                     }
                     else
                     {
                         mFriends = new List<Player>();
-                        GooglePlayGames.OurUtils.Logger.e(
-                            "Got " + status + " loading friends");
-                        PlayGamesHelperObject.RunOnGameThread(() =>
-                            callback(false));
+                        GooglePlayGames.OurUtils.Logger.e("Got " + status + " loading friends");
+                        callback(false);
                     }
                 });
         }
@@ -569,7 +525,6 @@ namespace GooglePlayGames.Native
 
                 mUser = response.Self().AsPlayer();
                 mFriends = null;
-                mTokenClient = clientImpl.CreateTokenClient(mUser.id, true);
             }
             GooglePlayGames.OurUtils.Logger.d("Found User: " + mUser);
             GooglePlayGames.OurUtils.Logger.d("Maybe finish for User");
@@ -613,23 +568,18 @@ namespace GooglePlayGames.Native
                                 mAuthState = AuthState.Unauthenticated;
                                 var silentCallbacks = mSilentAuthCallbacks;
                                 mSilentAuthCallbacks = null;
-                                GooglePlayGames.OurUtils.Logger.d(
-                                    "Invoking callbacks, AuthState changed " +
-                                    "from silentPending to Unauthenticated.");
+                                Debug.Log("Invoking callbacks, AuthState changed from silentPending to Unauthenticated.");
 
                                 InvokeCallbackOnGameThread(silentCallbacks, false);
                                 if (mPendingAuthCallbacks != null)
                                 {
-                                    GooglePlayGames.OurUtils.Logger.d(
-                                        "there are pending auth callbacks - starting AuthUI");
+                                    Debug.Log("there are pending auth callbacks - starting AuthUI");
                                     GameServices().StartAuthorizationUI();
                                 }
                             }
                             else
                             {
-                                GooglePlayGames.OurUtils.Logger.d(
-                                        "AuthState == " + mAuthState +
-                                          " calling auth callbacks with failure");
+                                Debug.Log("AuthState == " + mAuthState + " calling auth callbacks with failure");
 
                                 // make sure we are not paused
                                 UnpauseUnityPlayer();
@@ -651,15 +601,15 @@ namespace GooglePlayGames.Native
             }
         }
 
-#if UNITY_IOS || UNITY_IPHONE
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    internal static extern void UnpauseUnityPlayer();
-#else
-    private void UnpauseUnityPlayer()
-    {
-        // don't do anything.
-    }
-#endif
+		#if UNITY_IOS || UNITY_IPHONE
+				[System.Runtime.InteropServices.DllImport("__Internal")]
+				internal static extern void UnpauseUnityPlayer();
+		#else
+		private void UnpauseUnityPlayer()
+		{
+			// don't do anything.
+		}
+		#endif
 
         private void ToUnauthenticated()
         {
@@ -669,7 +619,7 @@ namespace GooglePlayGames.Native
                 mFriends = null;
                 mAchievements = null;
                 mAuthState = AuthState.Unauthenticated;
-                mTokenClient = clientImpl.CreateTokenClient(null, true);
+                mTokenClient = clientImpl.CreateTokenClient(true);
                 mAuthGeneration++;
             }
         }
@@ -728,12 +678,6 @@ namespace GooglePlayGames.Native
         /// <seealso cref="GooglePlayGames.BasicApi.IPlayGamesClient.GetPlayerStats"/>
         public void GetPlayerStats(Action<CommonStatusCodes, PlayerStats> callback)
         {
-#if UNITY_ANDROID
-            // Temporary fix to get SpendProbability until the
-            // C++ SDK supports it.
-            PlayGamesHelperObject.RunOnGameThread(() =>
-                clientImpl.GetPlayerStats(GetApiClient(), callback));
-#else
             mServices.StatsManager().FetchForPlayer((playerStatsResponse) => {
                 // Translate native errors into CommonStatusCodes.
                 CommonStatusCodes responseCode =
@@ -749,22 +693,14 @@ namespace GooglePlayGames.Native
                 {
                     if (playerStatsResponse.PlayerStats() != null)
                     {
-                        // Copy the object out of the native interface so
-                        // it will not be deleted before the callback is
-                        // executed on the UI thread.
-                        PlayerStats stats =
-                            playerStatsResponse.PlayerStats().AsPlayerStats();
-                        PlayGamesHelperObject.RunOnGameThread(() =>
-                            callback(responseCode,stats));
+                        callback(responseCode, playerStatsResponse.PlayerStats().AsPlayerStats());
                     }
                     else
                     {
-                        PlayGamesHelperObject.RunOnGameThread(() =>
-                            callback(responseCode, new PlayerStats()));
+                        callback(responseCode, new PlayerStats());
                     }
                 }
             });
-#endif
         }
 
         ///<summary></summary>
@@ -779,8 +715,7 @@ namespace GooglePlayGames.Native
                     {
                         users[i] = nativeUsers[i].AsPlayer();
                     }
-                    PlayGamesHelperObject.RunOnGameThread(() =>
-                        callback(users));
+                    callback(users);
                 });
         }
 
@@ -802,8 +737,7 @@ namespace GooglePlayGames.Native
         {
             Achievement[] data = new Achievement[mAchievements.Count];
             mAchievements.Values.CopyTo (data, 0);
-            PlayGamesHelperObject.RunOnGameThread(() =>
-                callback.Invoke (data));
+            callback.Invoke (data);
         }
 
         ///<summary></summary>
@@ -1039,7 +973,6 @@ namespace GooglePlayGames.Native
             LeaderboardTimeSpan timeSpan,
             Action<LeaderboardScoreData> callback)
         {
-            callback = AsOnGameThreadCallback(callback);
             GameServices().LeaderboardManager().LoadLeaderboardData(
                 leaderboardId, start, rowCount, collection, timeSpan,
                 this.mUser.id, callback
@@ -1051,7 +984,6 @@ namespace GooglePlayGames.Native
         public void LoadMoreScores(ScorePageToken token, int rowCount,
             Action<LeaderboardScoreData> callback)
         {
-            callback = AsOnGameThreadCallback(callback);
             GameServices().LeaderboardManager().LoadScorePage(null,
                 rowCount, token, callback);
         }

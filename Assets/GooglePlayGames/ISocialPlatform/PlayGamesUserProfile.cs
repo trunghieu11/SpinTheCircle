@@ -13,12 +13,10 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-
 #if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
 
 namespace GooglePlayGames
 {
-    using System;
     using System.Collections;
     using GooglePlayGames.OurUtils;
     using UnityEngine;
@@ -52,11 +50,7 @@ namespace GooglePlayGames
         {
             mDisplayName = displayName;
             mPlayerId = playerId;
-            if (mAvatarUrl != avatarUrl)
-            {
-                mImage = null;
-                mAvatarUrl = avatarUrl;
-            }
+            mAvatarUrl = avatarUrl;
             mImageLoading = false;
         }
 
@@ -169,13 +163,12 @@ namespace GooglePlayGames
                 return true;
             }
 
-            PlayGamesUserProfile other = obj as PlayGamesUserProfile;
-            if (other == null)
+            if (!typeof(object).IsSubclassOf(typeof(PlayGamesUserProfile)))
             {
                 return false;
             }
 
-            return StringComparer.Ordinal.Equals(mPlayerId, other.mPlayerId);
+            return mPlayerId.Equals(((PlayGamesUserProfile)obj).mPlayerId);
         }
 
         public override int GetHashCode()
