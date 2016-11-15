@@ -265,6 +265,7 @@
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonExit.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonLeaderboard.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonLike.cs" />
+    <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonMute.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonOpenUrl.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonRate.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonWatchAd.cs" />

@@ -126,7 +126,9 @@ namespace AppAdvisory.SpinTheCircle
 			FindObjectOfType<UIController>().SetLastText(Util.GetLastScore());
 			FindObjectOfType<UIController>().SetBestText(Util.GetBestScore());
 			FindObjectOfType<UIController>().DOAnimIN();
-		}
+
+            FindObjectOfType<ButtonMute>().SetSoundState();
+        }
 
 		/// <summary>
 		/// Create a new game: Set the texts, the numTotalOfMove and if the last game was not a game over : do the animation in
