@@ -14,23 +14,21 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace AppAdvisory.SpinTheCircle
-{
-	/// <summary>
-	/// Class in charge to manage input touch and desktop input in the game
-	/// </summary>
-	public class InputTouch : MonoBehaviour
-	{
-		public delegate void TouchLeft();
-		public static event TouchLeft OnTouchLeft;
+namespace AppAdvisory.SpinTheCircle {
+    /// <summary>
+    /// Class in charge to manage input touch and desktop input in the game
+    /// </summary>
+    public class InputTouch : MonoBehaviour {
+        public delegate void TouchLeft();
+        public static event TouchLeft OnTouchLeft;
 
-		public delegate void TouchRight();
-		public static event TouchRight OnTouchRight;
+        public delegate void TouchRight();
+        public static event TouchRight OnTouchRight;
 
-		public delegate void TouchScreen();
-		public static event TouchScreen OnTouchScreen;
+        public delegate void TouchScreen();
+        public static event TouchScreen OnTouchScreen;
 
-		#if UNITY_TVOS
+#if UNITY_TVOS
 		private Vector2 startPosition;
 		void OnEnable()
 		{
@@ -69,14 +67,13 @@ namespace AppAdvisory.SpinTheCircle
 		}
 
 
-		#endif
+#endif
 
-		void Update () 
-		{
-
+        void Update() {
 
 
-			#if UNITY_TVOS
+
+#if UNITY_TVOS
 
 			if(!gameStarted)
 			{
@@ -107,67 +104,58 @@ namespace AppAdvisory.SpinTheCircle
 
 			}
 
-			#endif
+#endif
 
-			#if (UNITY_ANDROID || UNITY_IOS || UNITY_TVOS) 
-			int nbTouches = Input.touchCount;
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_TVOS)
+            int nbTouches = Input.touchCount;
 
-			if(nbTouches > 0)
-			{
+            if (nbTouches > 0) {
 
-			Touch touch = Input.GetTouch(0);
+                Touch touch = Input.GetTouch(0);
 
-			TouchPhase phase = touch.phase;
+                TouchPhase phase = touch.phase;
 
-			if (phase == TouchPhase.Began)
-			{
+                if (phase == TouchPhase.Began) {
 
-			if (touch.position.x < Screen.width / 2f)
-			{
-			_OnTouchLeft();
-			}
-			else
-			{
-			_OnTouchRight();
-			}
+                    if (touch.position.x < Screen.width / 2f) {
+                        _OnTouchLeft();
+                    } else {
+                        _OnTouchRight();
+                    }
 
 
-			}
+                }
 
-			}
+            }
 
-			#endif
+#endif
 
-			#if (!UNITY_ANDROID && !UNITY_IOS && !UNITY_TVOS) || UNITY_EDITOR
+#if (!UNITY_ANDROID && !UNITY_IOS && !UNITY_TVOS) || UNITY_EDITOR
 
-			if (Input.GetKeyDown (KeyCode.LeftArrow))
-			{
-				_OnTouchLeft();
-			}
-			if (Input.GetKeyDown (KeyCode.RightArrow))
-			{
-				_OnTouchRight();
-			}
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+                _OnTouchLeft();
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow)) {
+                _OnTouchRight();
+            }
 
-			#endif
-		}
+#endif
+        }
 
-		void _OnTouchLeft()
-		{
-			if(OnTouchScreen != null)
-				OnTouchScreen();
+        void _OnTouchLeft() {
+            if (OnTouchScreen != null)
+                OnTouchScreen();
 
-			if(OnTouchLeft != null)
-				OnTouchLeft();
-		}
+            if (OnTouchLeft != null)
+                OnTouchLeft();
+        }
 
-		void _OnTouchRight()
-		{
-			if(OnTouchScreen != null)
-				OnTouchScreen();
+        void _OnTouchRight() {
+            if (OnTouchScreen != null)
+                OnTouchScreen();
 
-			if(OnTouchRight != null)
-				OnTouchRight();
-		}
-	}
+            if (OnTouchRight != null)
+                OnTouchRight();
+        }
+    }
 }

@@ -7,7 +7,7 @@ namespace AppAdvisory.UI {
 	/// Attached to exit button
 	/// </summary>
     public class ButtonExit : MonoBehaviour {
-        
+
         public void OnClickedExitButton() {
             Application.Quit();
         }
