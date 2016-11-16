@@ -124,13 +124,14 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public void SetNewGame() {
             isGameOver = false;
-
+            DOTween.timeScale = 1.0f;
             point = 0;
 
-            if (!Util.RestartFromGameOver())
+            if (!Util.RestartFromGameOver()) {
                 DOMoveLevelIn(() => {
                     FindObjectOfType<GameLogic>().DOStart();
                 });
+            }
         }
 
         /// <summary>

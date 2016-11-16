@@ -72,6 +72,10 @@ namespace AppAdvisory.SpinTheCircle {
             }
         }
         /// <summary>
+        /// ball throw speed
+        /// </summary>
+        float _ballSpeed = 0.65f;
+        /// <summary>
         /// Speed of the circle, in seconds (total time in seconds to make 360 degree rotation), for the current level
         /// </summary>
         [System.NonSerialized]
@@ -128,7 +132,7 @@ namespace AppAdvisory.SpinTheCircle {
             }
 
             // ball bouncing speed
-            ball.rectTransform.DOLocalMoveY(-jumpHeight * 0.75f, 0.65f)
+            ball.rectTransform.DOLocalMoveY(-jumpHeight * 0.75f, _ballSpeed)
                 .SetEase(Ease.InQuad)
                 .SetLoops(-1, LoopType.Yoyo)
                 .OnStepComplete(() => {
@@ -139,6 +143,7 @@ namespace AppAdvisory.SpinTheCircle {
                             ball.rectTransform.DOKill();
                         } else {
                             gameManager.point++;
+                            updateBallSpeed(gameManager.point);
                             DOColorBall();
                         }
                     }
@@ -147,6 +152,23 @@ namespace AppAdvisory.SpinTheCircle {
                     ball.rectTransform.DOLocalMoveY(-1000, 2f);
                 });
         }
+        /// <summary>
+        /// update ball speed when point increase
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private void updateBallSpeed(int point) {
+            if (point >= 100) {
+                DOTween.timeScale = 1.4f;
+            } else if (point >= 60) {
+                DOTween.timeScale = 1.3f;
+            } else if (point >= 30) {
+                DOTween.timeScale = 1.2f;
+            } else if (point >= 10) {
+                DOTween.timeScale = 1.1f;
+            }
+        }
+
         /// <summary>
         /// Listen if the player tap or click, and if the game is not game over after the click (so ball color = part of the circle color) launch again the rotation but in the oposite direction
         /// </summary>
