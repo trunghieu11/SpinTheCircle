@@ -89,11 +89,11 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void Awake() {
             Util.CleanMemory();
-
-
+            
             if (!Util.RestartFromGameOver()) {
                 float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(5 * width, 0, 0);
+                FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
             }
         }
         /// <summary>
@@ -101,8 +101,9 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void Start() {
             if (Application.isEditor) {
-                if (RESET_PLAYER_PREF)
+                if (RESET_PLAYER_PREF) {
                     PlayerPrefs.DeleteAll();
+                }
             }
 
             RESET_PLAYER_PREF = false;
@@ -110,6 +111,7 @@ namespace AppAdvisory.SpinTheCircle {
             if (!Util.RestartFromGameOver()) {
                 float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(width, 0, 0);
+                FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
             }
 
             FindObjectOfType<UIController>().SetLastText(Util.GetLastScore());
@@ -126,7 +128,7 @@ namespace AppAdvisory.SpinTheCircle {
             isGameOver = false;
             DOTween.timeScale = 1.0f;
             point = 0;
-
+            
             if (!Util.RestartFromGameOver()) {
                 DOMoveLevelIn(() => {
                     FindObjectOfType<GameLogic>().DOStart();
@@ -170,8 +172,9 @@ namespace AppAdvisory.SpinTheCircle {
                     FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(f, 0, 0);
                 })
                 .OnComplete(() => {
-                    if (callback != null)
+                    if (callback != null) {
                         callback();
+                    }
                 });
         }
         /// <summary>
@@ -180,9 +183,16 @@ namespace AppAdvisory.SpinTheCircle {
         void DOMoveLevelIn(Action callback) {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
 
+            if (Util.FirstPlay()) {
+                DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
+                    (float f) => {
+                        FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(f, 0, 0);
+                    })
+                    .SetDelay(0.5f);
+            }
+
             DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
                 (float f) => {
-
                     FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(f, 0, 0);
                 })
                 .SetDelay(0.1f)

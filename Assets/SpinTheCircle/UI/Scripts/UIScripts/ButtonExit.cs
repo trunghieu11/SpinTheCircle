@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using AppAdvisory.SpinTheCircle;
 
 namespace AppAdvisory.UI {
 
@@ -9,6 +10,7 @@ namespace AppAdvisory.UI {
     public class ButtonExit : MonoBehaviour {
 
         public void OnClickedExitButton() {
+            PlayerPrefsX.SetBool("_FirstPlay", true);
             Application.Quit();
         }
     }

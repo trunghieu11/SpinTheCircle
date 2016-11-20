@@ -58,6 +58,14 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public List<Color> listColorReordered = new List<Color>();
         /// <summary>
+        /// Tutorial image
+        /// </summary>
+        public Image tutorialImage;
+        /// <summary>
+        /// Check circle is move on and game is started
+        /// </summary>
+        bool gameStarted = false;
+        /// <summary>
         /// The height of the ball jump
         /// </summary>
         float jumpHeight = -1f;
@@ -126,6 +134,7 @@ namespace AppAdvisory.SpinTheCircle {
 
         public void DOStart() {
             DOOnEnable();
+            gameStarted = true;
 
             if (jumpHeight == -1f) {
                 jumpHeight = partParent.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2f;
@@ -151,9 +160,15 @@ namespace AppAdvisory.SpinTheCircle {
                 .OnKill(() => {
                     ball.rectTransform.DOLocalMoveY(-1000, 2f);
                 });
+
+            if (Util.FirstPlay()) {
+                DOTween.Pause(partParent);
+                DOTween.Pause(ball.rectTransform);
+                OnDisable();
+            }
         }
         /// <summary>
-        /// update ball speed when point increase
+        /// update ball speed when point increases
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
@@ -168,16 +183,38 @@ namespace AppAdvisory.SpinTheCircle {
                 DOTween.timeScale = 1.1f;
             }
         }
-
+        
         /// <summary>
         /// Listen if the player tap or click, and if the game is not game over after the click (so ball color = part of the circle color) launch again the rotation but in the oposite direction
         /// </summary>
         void Update() {
+            if (Util.FirstPlay() && Input.GetMouseButtonDown(0) && gameStarted) {
+                MoveOutTutorial();
+                PlayerPrefsX.SetBool("_FirstPlay", false);
+            }
+
             if (gameManager.isGameOver) {
-                if (rotateTweener != null && rotateTweener.IsPlaying())
+                gameStarted = false;
+                if (rotateTweener != null && rotateTweener.IsPlaying()) {
                     rotateTweener.Kill();
+                }
                 return;
             }
+        }
+        /// <summary>
+        /// Move out tutorial
+        /// </summary>
+        void MoveOutTutorial() {
+            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            DOVirtual.Float(0f, -1.5f * width, 0.3f,
+                (float f) => {
+                    tutorialImage.rectTransform.anchoredPosition = new Vector3(f, 0, 0);
+                })
+                .OnComplete(() => {
+                    DOTween.Play(partParent);
+                    DOTween.Play(ball.rectTransform);
+                    DOOnEnable();
+                });
         }
         /// <summary>
         /// Reference to the tweener who rotate the circle
@@ -208,8 +245,16 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void Start() {
             BuildCircle();
+            PrepareTutorial();
 
             ball.color = GetSelection().image.color;
+        }
+        /// <summary>
+        /// Init tutorial image size
+        /// </summary>
+        void PrepareTutorial() {
+            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
         }
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 
@@ -259,7 +304,7 @@ namespace AppAdvisory.SpinTheCircle {
             }
         }
         /// <summary>
-        /// Method to build the circle. Each part of the circle is an UI Image, type = fill image. We use the fill amout property to cretae the parts of the circle
+        /// Method to build the circle. Each part of the circle is an UI Image, type = fill image. We use the fill amout property to create the parts of the circle
         /// </summary>
         void BuildCircle() {
             float countAngle = 0f;

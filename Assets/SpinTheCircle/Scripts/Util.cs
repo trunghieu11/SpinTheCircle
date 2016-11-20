@@ -106,7 +106,14 @@ namespace AppAdvisory.SpinTheCircle {
         /// Resturn true if last time we play we lose (= Game Over)
         /// </summary>
         public static bool RestartFromGameOver() {
-            return PlayerPrefs.GetInt("_RestartFromGameOver", 0) == 1;
+            return PlayerPrefsX.GetBool("_RestartFromGameOver", false);
+        }
+        /// <summary>
+        /// Return true if this's the first play
+        /// </summary>
+        /// <returns></returns>
+        public static bool FirstPlay() {
+            return PlayerPrefsX.GetBool("_FirstPlay", true);
         }
     }
 }
