@@ -278,6 +278,15 @@
     <Compile Include="Assets\Very_Simple_Leaderboard\Scripts\LEADERBOARDIDS.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Scripts\LeaderboardInit.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Scripts\LeaderboardManager.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Scripts\Enums.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Scripts\ScreenshotElement.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Scripts\TextToDisplayOnTheScreenshot.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Scripts\TextureContainer.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Scripts\VSSHARE.cs" />
+    <Compile Include="Assets\Very_Simple_Share\_Exemple\Scripts\BtnHideScreenshotIcon.cs" />
+    <Compile Include="Assets\Very_Simple_Share\_Exemple\Scripts\BtnShowScreenshot.cs" />
+    <Compile Include="Assets\Very_Simple_Share\_Exemple\Scripts\BtnTakeScreenshot.cs" />
+    <Compile Include="Assets\Very_Simple_Share\_Exemple\Scripts\TextEventAnimation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />

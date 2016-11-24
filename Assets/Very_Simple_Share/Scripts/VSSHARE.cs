@@ -505,10 +505,11 @@ namespace AppAdvisory.SharingSystem
 
 		public void ShareScreenshot(string text)
 		{
-			if(withText)
-				OpenShareImageMobileNativeDialog(text);
-			else
-				OpenShareImageOnlyMobileNativeDialog();
+            if (withText) {
+                OpenShareImageMobileNativeDialog(text);
+            } else {
+                OpenShareImageOnlyMobileNativeDialog();
+            }
 				
 			return;
 			#if UNITY_IOS || UNITY_IPHONE || UNITY_ANDROID
@@ -912,26 +913,26 @@ AndroidJNIHelper.debug = true;
 
 #if UNITY_ANDROID
 
-string screenShotPath = Application.persistentDataPath + "/" + "ScreenshotVSSHARE.png";
-System.IO.File.WriteAllBytes(screenShotPath, screenshot.EncodeToPNG());
+            string screenShotPath = Application.persistentDataPath + "/" + "ScreenshotVSSHARE.png";
+            System.IO.File.WriteAllBytes(screenShotPath, screenshot.EncodeToPNG());
 
-AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
-AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
+            AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
+            AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
 
-intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
-AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
+            intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
+            AndroidJavaClass uriClass = new AndroidJavaClass("android.net.Uri");
 
-AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + screenShotPath);
-intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
-intentObject.Call<AndroidJavaObject>("setType", "image/png");
+            AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("parse", "file://" + screenShotPath);
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_STREAM"), uriObject);
+            intentObject.Call<AndroidJavaObject>("setType", "image/png");
 
-intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), shareText);
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), shareText);
 
-AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
 
-AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share");
-currentActivity.Call("startActivity", jChooser);
+            AndroidJavaObject jChooser = intentClass.CallStatic<AndroidJavaObject>("createChooser", intentObject, "Share");
+            currentActivity.Call("startActivity", jChooser);
 
 #endif
 		}

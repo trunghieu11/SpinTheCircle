@@ -151,6 +151,8 @@
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDInspectorGUI.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDUtility.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\WelcomeVerySimpleLeaderboard.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Editor\AutorunVS.cs" />
+    <Compile Include="Assets\Very_Simple_Share\Editor\WelcomeVerySimpleShare.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />
