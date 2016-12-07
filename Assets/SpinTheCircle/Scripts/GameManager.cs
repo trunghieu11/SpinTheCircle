@@ -122,6 +122,17 @@ namespace AppAdvisory.SpinTheCircle {
         }
 
         /// <summary>
+        /// Method update, exit game when user click back
+        /// </summary>
+        void Update() {
+#if UNITY_ANDROID
+            if (Input.GetKey(KeyCode.Escape)) {
+                FindObjectOfType<ButtonExit>().OnClickedExitButton();
+            }
+#endif
+        }
+
+        /// <summary>
         /// Create a new game: Set the texts, the numTotalOfMove and if the last game was not a game over : do the animation in
         /// </summary>
         public void SetNewGame() {
