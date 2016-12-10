@@ -194,6 +194,7 @@ namespace AppAdvisory.SpinTheCircle {
         void DOMoveLevelIn(Action callback) {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
 
+            // show tutorial on first play
             if (Util.FirstPlay()) {
                 DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
                     (float f) => {
