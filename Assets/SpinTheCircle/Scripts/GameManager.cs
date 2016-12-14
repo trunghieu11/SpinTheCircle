@@ -59,7 +59,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Reference to circle parent, to do the animation in and out for transition between level 
         /// </summary>
         SoundManager _soundManager;
-        SoundManager soundManager {
+        public SoundManager soundManager {
             get {
                 if (_soundManager == null)
                     _soundManager = FindObjectOfType<SoundManager>();
@@ -94,6 +94,7 @@ namespace AppAdvisory.SpinTheCircle {
                 float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
+                FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
             }
         }
         /// <summary>
@@ -112,6 +113,7 @@ namespace AppAdvisory.SpinTheCircle {
                 float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
+                FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
             }
 
             FindObjectOfType<UIController>().SetLastText(Util.GetLastScore());
@@ -137,8 +139,9 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public void SetNewGame() {
             isGameOver = false;
-            DOTween.timeScale = 1.0f;
+            DOTween.timeScale = 1.1f;
             point = 0;
+            
             
             if (!Util.RestartFromGameOver()) {
                 DOMoveLevelIn(() => {

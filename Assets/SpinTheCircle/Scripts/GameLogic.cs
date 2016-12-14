@@ -62,6 +62,10 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public Image tutorialImage;
         /// <summary>
+        /// Speed up image
+        /// </summary>
+        public Image speedUpImage;
+        /// <summary>
         /// Check circle is move on and game is started
         /// </summary>
         bool gameStarted = false;
@@ -173,15 +177,39 @@ namespace AppAdvisory.SpinTheCircle {
         /// <param name="point"></param>
         /// <returns></returns>
         private void updateBallSpeed(int point) {
-            if (point >= 100) {
+            float lastTimeScale = DOTween.timeScale;
+            if (point >= 60) {
                 DOTween.timeScale = 1.4f;
-            } else if (point >= 60) {
-                DOTween.timeScale = 1.3f;
             } else if (point >= 30) {
-                DOTween.timeScale = 1.2f;
+                DOTween.timeScale = 1.3f;
             } else if (point >= 10) {
-                DOTween.timeScale = 1.1f;
+                DOTween.timeScale = 1.2f;
             }
+
+            if (lastTimeScale != DOTween.timeScale) {
+                ShowSpeedUp();
+            }
+        }
+
+        /// <summary>
+        /// Show speed up text
+        /// </summary>
+        void ShowSpeedUp() {
+            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+
+            DOVirtual.Float(+width * 1.5f, 0f, 0.5f,
+                    (float f) => {
+                        speedUpImage.rectTransform.anchoredPosition = new Vector3(f, width / 5, 0);
+                    })
+                    .OnStart(() => {
+                        FindObjectOfType<GameManager>().soundManager.PlaySpeedIncrease();
+                    });
+
+            DOVirtual.Float(0f, -1.5f * width, 0.5f,
+                (float f) => {
+                    speedUpImage.rectTransform.anchoredPosition = new Vector3(f, width / 5, 0);
+                })
+                .SetDelay(1.0f);
         }
         
         /// <summary>
@@ -246,15 +274,23 @@ namespace AppAdvisory.SpinTheCircle {
         void Start() {
             BuildCircle();
             PrepareTutorial();
+            PrepareSpeedUpImage();
 
             ball.color = GetSelection().image.color;
         }
         /// <summary>
-        /// Init tutorial image size
+        /// Initial tutorial image size
         /// </summary>
         void PrepareTutorial() {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
             tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
+        }
+        /// <summary>
+        /// Initial speed up image size
+        /// </summary>
+        void PrepareSpeedUpImage() {
+            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.4f + Vector2.up * width * 0.1f;
         }
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 

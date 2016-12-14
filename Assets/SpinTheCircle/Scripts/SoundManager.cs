@@ -38,6 +38,11 @@ namespace AppAdvisory.SpinTheCircle {
         [SerializeField]
         private AudioClip soundTouch;
         /// <summary>
+        /// Sound played when speed increase pop up on the screen
+        /// </summary>
+        [SerializeField]
+        private AudioClip soundSpeedIncrease;
+        /// <summary>
         /// Find the audiosource attached to the same game object
         /// </summary>
         void Awake() {
@@ -60,6 +65,12 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public void PlayTouch() {
             audioSource.PlayOneShot(soundTouch, 1f);
+        }
+        /// <summary>
+        /// Method called when the speed increase popup on the screen
+        /// </summary>
+        public void PlaySpeedIncrease() {
+            audioSource.PlayOneShot(soundSpeedIncrease, 0.2f);
         }
     }
 }
