@@ -290,7 +290,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void PrepareSpeedUpImage() {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
-            speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.4f + Vector2.up * width * 0.1f;
+            speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.5f + Vector2.up * width * 0.125f;
         }
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 
