@@ -209,7 +209,7 @@ namespace AppAdvisory.SpinTheCircle {
                 (float f) => {
                     speedUpImage.rectTransform.anchoredPosition = new Vector3(f, width / 5, 0);
                 })
-                .SetDelay(1.0f);
+                .SetDelay(1.5f);
         }
         
         /// <summary>
