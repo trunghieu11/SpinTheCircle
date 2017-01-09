@@ -95,6 +95,7 @@ namespace AppAdvisory.SpinTheCircle {
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
+                FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
             }
         }
         /// <summary>
@@ -114,6 +115,7 @@ namespace AppAdvisory.SpinTheCircle {
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
+                FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
             }
 
             FindObjectOfType<UIController>().SetLastText(Util.GetLastScore());
@@ -141,7 +143,6 @@ namespace AppAdvisory.SpinTheCircle {
             isGameOver = false;
             DOTween.timeScale = 1.1f;
             point = 0;
-            
             
             if (!Util.RestartFromGameOver()) {
                 DOMoveLevelIn(() => {
@@ -196,6 +197,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void DOMoveLevelIn(Action callback) {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float height = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.y;
 
             // show tutorial on first play
             if (Util.FirstPlay()) {
@@ -205,6 +207,12 @@ namespace AppAdvisory.SpinTheCircle {
                     })
                     .SetDelay(0.5f);
             }
+
+            DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
+                (float f) => {
+                    FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(f - width / 2.5f, height / 2.25f, 0);
+                })
+                .SetDelay(0.3f);
 
             DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
                 (float f) => {

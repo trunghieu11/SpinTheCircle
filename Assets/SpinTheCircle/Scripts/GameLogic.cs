@@ -66,6 +66,10 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public Image speedUpImage;
         /// <summary>
+        /// diamond image
+        /// </summary>
+        public Image diamondImage;
+        /// <summary>
         /// Check circle is move on and game is started
         /// </summary>
         bool gameStarted = false;
@@ -211,7 +215,7 @@ namespace AppAdvisory.SpinTheCircle {
                 })
                 .SetDelay(1.5f);
         }
-        
+
         /// <summary>
         /// Listen if the player tap or click, and if the game is not game over after the click (so ball color = part of the circle color) launch again the rotation but in the oposite direction
         /// </summary>
@@ -273,15 +277,22 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void Start() {
             BuildCircle();
-            PrepareTutorial();
-            PrepareSpeedUpImage();
+            PrepareImages();
 
             ball.color = GetSelection().image.color;
         }
         /// <summary>
+        /// All image methods
+        /// </summary>
+        void PrepareImages() {
+            PrepareTutorialImage();
+            PrepareSpeedUpImage();
+            PrepareDiamondImage();
+        }
+        /// <summary>
         /// Initial tutorial image size
         /// </summary>
-        void PrepareTutorial() {
+        void PrepareTutorialImage() {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
             tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
         }
@@ -291,6 +302,13 @@ namespace AppAdvisory.SpinTheCircle {
         void PrepareSpeedUpImage() {
             float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
             speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.5f + Vector2.up * width * 0.125f;
+        }
+        /// <summary>
+        /// Initial diamond image size
+        /// </summary>
+        void PrepareDiamondImage() {
+            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            diamondImage.rectTransform.sizeDelta = Vector2.right * width * 0.07f + Vector2.up * width * 0.07f;
         }
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 
