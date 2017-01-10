@@ -24,6 +24,19 @@ namespace AppAdvisory.SpinTheCircle {
     /// Utility class. This class is static, so you can use it in all your projects!
     /// </summary>
     public static class Util {
+        public static string FIRST_PLAY_PREF = "_FirstPlay";
+        public static string TOTAL_DIAMOND_PREF = "_TotalDiamond";
+        public static string ARRAY_COLOR_SAVED_PREF = "_arrayColorSaved";
+        public static string GAMEOVER_COUNT_PREF = "GAMEOVER_COUNT";
+        public static string LAST_SCORE_PREF = "LAST_SCORE";
+        public static string BEST_SCORE_PREF = "BEST_SCORE";
+        public static string RESTART_FROM_GAMEOVER_PREF = "_RestartFromGameOver";
+        public static string MUTED_PREF = "Muted";
+        public static string LEADERBOARD_ID_PREF = "__LEADERBOARDID";
+
+        private static float _width = -1;
+        private static float _height = -1;
+
         /// <summary>
         /// Compare two colors
         /// </summary>
@@ -55,7 +68,7 @@ namespace AppAdvisory.SpinTheCircle {
             }
         }
         public static bool SetLastScore(int score) {
-            PlayerPrefs.SetInt("LAST_SCORE", score);
+            PlayerPrefs.SetInt(LAST_SCORE_PREF, score);
 
             bool isBest = false;
 
@@ -63,7 +76,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             if (best < score) {
                 isBest = true;
-                PlayerPrefs.SetInt("BEST_SCORE", score);
+                PlayerPrefs.SetInt(BEST_SCORE_PREF, score);
             }
 
 
@@ -73,11 +86,11 @@ namespace AppAdvisory.SpinTheCircle {
         }
 
         public static int GetLastScore() {
-            return PlayerPrefs.GetInt("LAST_SCORE", 0);
+            return PlayerPrefs.GetInt(LAST_SCORE_PREF, 0);
         }
 
         public static int GetBestScore() {
-            return PlayerPrefs.GetInt("BEST_SCORE", 0);
+            return PlayerPrefs.GetInt(BEST_SCORE_PREF, 0);
         }
 
         /// <summary>
@@ -106,14 +119,34 @@ namespace AppAdvisory.SpinTheCircle {
         /// Resturn true if last time we play we lose (= Game Over)
         /// </summary>
         public static bool RestartFromGameOver() {
-            return PlayerPrefsX.GetBool("_RestartFromGameOver", false);
+            return PlayerPrefsX.GetBool(Util.RESTART_FROM_GAMEOVER_PREF, false);
         }
         /// <summary>
         /// Return true if this's the first play
         /// </summary>
         /// <returns></returns>
         public static bool FirstPlay() {
-            return PlayerPrefsX.GetBool("_FirstPlay", true);
+            return PlayerPrefsX.GetBool(Util.FIRST_PLAY_PREF, true);
+        }
+        /// <summary>
+        /// get canvas width
+        /// </summary>
+        public static float getWidth() {
+            if (_width < 0) {
+                _width = UnityEngine.Object.FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            }
+
+            return _width;
+        }
+        /// <summary>
+        /// get canvas height
+        /// </summary>
+        public static float getHeight() {
+            if (_height < 0) {
+                _height = UnityEngine.Object.FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.y;
+            }
+
+            return _height;
         }
     }
 }

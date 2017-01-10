@@ -91,7 +91,7 @@ namespace AppAdvisory.SpinTheCircle {
             Util.CleanMemory();
             
             if (!Util.RestartFromGameOver()) {
-                float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+                float width = Util.getWidth();
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
@@ -111,7 +111,7 @@ namespace AppAdvisory.SpinTheCircle {
             RESET_PLAYER_PREF = false;
 
             if (!Util.RestartFromGameOver()) {
-                float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+                float width = Util.getWidth();
                 FindObjectOfType<GameLogic>().GetComponent<RectTransform>().anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
@@ -180,7 +180,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Animation out of the circle (from center to left)
         /// </summary>
         void DOMoveLevelOut(Action callback) {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
 
             DOVirtual.Float(0f, -1.5f * width, 0.3f,
                 (float f) => {
@@ -196,8 +196,8 @@ namespace AppAdvisory.SpinTheCircle {
         /// Animation in of the circle (from right to center)
         /// </summary>
         void DOMoveLevelIn(Action callback) {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
-            float height = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.y;
+            float width = Util.getWidth();
+            float height = Util.getHeight();
 
             // show tutorial on first play
             if (Util.FirstPlay()) {
@@ -210,7 +210,8 @@ namespace AppAdvisory.SpinTheCircle {
 
             DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
                 (float f) => {
-                    FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(f - width / 2.5f, height / 2.25f, 0);
+                    FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(f - width / 2.3f, height / 2.25f, 0);
+                    Debug.Log("width: " + width + " height: " + height);
                 })
                 .SetDelay(0.3f);
 
@@ -238,9 +239,9 @@ namespace AppAdvisory.SpinTheCircle {
         /// Show Ads - Interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
         public void ShowAds() {
-            int count = PlayerPrefs.GetInt("GAMEOVER_COUNT", 0);
+            int count = PlayerPrefs.GetInt(Util.GAMEOVER_COUNT_PREF, 0);
             count++;
-            PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
+            PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
             PlayerPrefs.Save();
 
 #if APPADVISORY_ADS
@@ -254,7 +255,7 @@ namespace AppAdvisory.SpinTheCircle {
 #if UNITY_EDITOR
 				print("AdsManager.instance.IsReadyInterstitial() == true ----> SO ====> set count = 0 AND show interstial");
 #endif
-				PlayerPrefs.SetInt("GAMEOVER_COUNT",0);
+				PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF,0);
 				AdsManager.instance.ShowInterstitial();
 			}
 			else
@@ -267,7 +268,7 @@ namespace AppAdvisory.SpinTheCircle {
 		}
 		else
 		{
-			PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
+			PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
 		}
 		PlayerPrefs.Save();
 #else
@@ -276,9 +277,9 @@ namespace AppAdvisory.SpinTheCircle {
                 Debug.LogWarning("Very Simple Ad is already implemented in this asset");
                 Debug.LogWarning("Just import the package and you are ready to use it and monetize your game!");
                 Debug.LogWarning("Very Simple Ad : " + VerySimpleAdsURL);
-                PlayerPrefs.SetInt("GAMEOVER_COUNT", 0);
+                PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, 0);
             } else {
-                PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
+                PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
             }
             PlayerPrefs.Save();
 #endif

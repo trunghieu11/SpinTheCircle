@@ -16,10 +16,10 @@ namespace AppAdvisory.UI {
         /// Toggle button mute
         /// </summary>
         public void ToggleSound() {
-            if (PlayerPrefsX.GetBool("Muted")) {
-                PlayerPrefsX.SetBool("Muted", false);
+            if (PlayerPrefsX.GetBool(Util.MUTED_PREF)) {
+                PlayerPrefsX.SetBool(Util.MUTED_PREF, false);
             } else {
-                PlayerPrefsX.SetBool("Muted", true);
+                PlayerPrefsX.SetBool(Util.MUTED_PREF, true);
             }
 
             SetSoundState();
@@ -29,7 +29,7 @@ namespace AppAdvisory.UI {
         /// Set sound state
         /// </summary>
         public void SetSoundState() {
-            if (!PlayerPrefsX.GetBool("Muted")) {
+            if (!PlayerPrefsX.GetBool(Util.MUTED_PREF)) {
                 AudioListener.volume = 1;
                 audioOnItem.SetActive(true);
                 audioOffItem.SetActive(false);

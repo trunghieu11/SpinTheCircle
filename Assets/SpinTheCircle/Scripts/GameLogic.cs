@@ -70,6 +70,14 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public Image diamondImage;
         /// <summary>
+        /// diamond counter
+        /// </summary>
+        public int totalDiamond;
+        /// <summary>
+        /// diamond counter text
+        /// </summary>
+        public Text totalDiamondText;
+        /// <summary>
         /// Check circle is move on and game is started
         /// </summary>
         bool gameStarted = false;
@@ -104,7 +112,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             if (Util.RestartFromGameOver()) {
                 listColorReordered = new List<Color>();
-                listColorReordered.AddRange(PlayerPrefsX.GetColorArray("_arrayColorSaved"));
+                listColorReordered.AddRange(PlayerPrefsX.GetColorArray(Util.ARRAY_COLOR_SAVED_PREF));
             } else {
                 listColorReordered.AddRange(FindObjectOfType<ColorManager>().colors);
             }
@@ -119,7 +127,7 @@ namespace AppAdvisory.SpinTheCircle {
                 }
             }
 
-            PlayerPrefsX.SetColorArray("_arrayColorSaved", listColorReordered.ToArray());
+            PlayerPrefsX.SetColorArray(Util.ARRAY_COLOR_SAVED_PREF, listColorReordered.ToArray());
             PlayerPrefs.Save();
         }
 
@@ -199,7 +207,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Show speed up text
         /// </summary>
         void ShowSpeedUp() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
 
             DOVirtual.Float(+width * 1.5f, 0f, 0.5f,
                     (float f) => {
@@ -222,7 +230,7 @@ namespace AppAdvisory.SpinTheCircle {
         void Update() {
             if (Util.FirstPlay() && Input.GetMouseButtonDown(0) && gameStarted) {
                 MoveOutTutorial();
-                PlayerPrefsX.SetBool("_FirstPlay", false);
+                PlayerPrefsX.SetBool(Util.FIRST_PLAY_PREF, false);
             }
 
             if (gameManager.isGameOver) {
@@ -237,7 +245,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Move out tutorial
         /// </summary>
         void MoveOutTutorial() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             DOVirtual.Float(0f, -1.5f * width, 0.3f,
                 (float f) => {
                     tutorialImage.rectTransform.anchoredPosition = new Vector3(f, 0, 0);
@@ -278,8 +286,15 @@ namespace AppAdvisory.SpinTheCircle {
         void Start() {
             BuildCircle();
             PrepareImages();
+            LoadTotalDiamond();
 
             ball.color = GetSelection().image.color;
+        }
+        /// <summary>
+        /// Load total diamond from db
+        /// </summary>
+        void LoadTotalDiamond() {
+            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF);
         }
         /// <summary>
         /// All image methods
@@ -293,21 +308,21 @@ namespace AppAdvisory.SpinTheCircle {
         /// Initial tutorial image size
         /// </summary>
         void PrepareTutorialImage() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
         }
         /// <summary>
         /// Initial speed up image size
         /// </summary>
         void PrepareSpeedUpImage() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.5f + Vector2.up * width * 0.125f;
         }
         /// <summary>
         /// Initial diamond image size
         /// </summary>
         void PrepareDiamondImage() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             diamondImage.rectTransform.sizeDelta = Vector2.right * width * 0.07f + Vector2.up * width * 0.07f;
         }
         /// <summary>
