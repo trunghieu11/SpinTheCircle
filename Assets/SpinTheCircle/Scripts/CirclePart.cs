@@ -34,7 +34,7 @@ namespace AppAdvisory.SpinTheCircle {
             image.rectTransform.eulerAngles = Vector3.forward * angle;
             image.rectTransform.SetSiblingIndex(0);
 
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
 
             image.rectTransform.sizeDelta = Vector2.one * width * 0.9f;
             image.color = color;

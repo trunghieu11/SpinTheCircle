@@ -66,6 +66,18 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         public Image speedUpImage;
         /// <summary>
+        /// diamond image
+        /// </summary>
+        public Image diamondImage;
+        /// <summary>
+        /// diamond counter
+        /// </summary>
+        public int totalDiamond = 0;
+        /// <summary>
+        /// diamond counter text
+        /// </summary>
+        public Text totalDiamondText;
+        /// <summary>
         /// Check circle is move on and game is started
         /// </summary>
         bool gameStarted = false;
@@ -100,7 +112,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             if (Util.RestartFromGameOver()) {
                 listColorReordered = new List<Color>();
-                listColorReordered.AddRange(PlayerPrefsX.GetColorArray("_arrayColorSaved"));
+                listColorReordered.AddRange(PlayerPrefsX.GetColorArray(Util.ARRAY_COLOR_SAVED_PREF));
             } else {
                 listColorReordered.AddRange(FindObjectOfType<ColorManager>().colors);
             }
@@ -115,7 +127,7 @@ namespace AppAdvisory.SpinTheCircle {
                 }
             }
 
-            PlayerPrefsX.SetColorArray("_arrayColorSaved", listColorReordered.ToArray());
+            PlayerPrefsX.SetColorArray(Util.ARRAY_COLOR_SAVED_PREF, listColorReordered.ToArray());
             PlayerPrefs.Save();
         }
 
@@ -152,10 +164,13 @@ namespace AppAdvisory.SpinTheCircle {
                     if (ball.rectTransform.localPosition.y < -150) {
                         bool isSameColor = CheckIfBallColorEqualCircleColor();
                         if (!isSameColor) {
+                            PlayerPrefs.SetInt(Util.TOTAL_DIAMOND_PREF, totalDiamond);
                             gameManager.GameOver();
                             ball.rectTransform.DOKill();
                         } else {
                             gameManager.point++;
+                            totalDiamond++;
+                            totalDiamondText.text = totalDiamond.ToString();
                             updateBallSpeed(gameManager.point);
                             DOColorBall();
                         }
@@ -195,7 +210,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Show speed up text
         /// </summary>
         void ShowSpeedUp() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
 
             DOVirtual.Float(+width * 1.5f, 0f, 0.5f,
                     (float f) => {
@@ -211,14 +226,14 @@ namespace AppAdvisory.SpinTheCircle {
                 })
                 .SetDelay(1.5f);
         }
-        
+
         /// <summary>
         /// Listen if the player tap or click, and if the game is not game over after the click (so ball color = part of the circle color) launch again the rotation but in the oposite direction
         /// </summary>
         void Update() {
             if (Util.FirstPlay() && Input.GetMouseButtonDown(0) && gameStarted) {
                 MoveOutTutorial();
-                PlayerPrefsX.SetBool("_FirstPlay", false);
+                PlayerPrefsX.SetBool(Util.FIRST_PLAY_PREF, false);
             }
 
             if (gameManager.isGameOver) {
@@ -233,7 +248,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Move out tutorial
         /// </summary>
         void MoveOutTutorial() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             DOVirtual.Float(0f, -1.5f * width, 0.3f,
                 (float f) => {
                     tutorialImage.rectTransform.anchoredPosition = new Vector3(f, 0, 0);
@@ -273,24 +288,46 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void Start() {
             BuildCircle();
-            PrepareTutorial();
-            PrepareSpeedUpImage();
+            PrepareImages();
+            LoadTotalDiamond();
 
+            totalDiamondText.text = totalDiamond.ToString();
             ball.color = GetSelection().image.color;
+        }
+        /// <summary>
+        /// Load total diamond from db
+        /// </summary>
+        void LoadTotalDiamond() {
+            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF, 0);
+        }
+        /// <summary>
+        /// All image methods
+        /// </summary>
+        void PrepareImages() {
+            PrepareTutorialImage();
+            PrepareSpeedUpImage();
+            PrepareDiamondImage();
         }
         /// <summary>
         /// Initial tutorial image size
         /// </summary>
-        void PrepareTutorial() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+        void PrepareTutorialImage() {
+            float width = Util.getWidth();
             tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
         }
         /// <summary>
         /// Initial speed up image size
         /// </summary>
         void PrepareSpeedUpImage() {
-            float width = FindObjectOfType<Canvas>().GetComponent<RectTransform>().sizeDelta.x;
+            float width = Util.getWidth();
             speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.5f + Vector2.up * width * 0.125f;
+        }
+        /// <summary>
+        /// Initial diamond image size
+        /// </summary>
+        void PrepareDiamondImage() {
+            float width = Util.getWidth();
+            diamondImage.rectTransform.sizeDelta = Vector2.right * width * 0.07f + Vector2.up * width * 0.07f;
         }
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 

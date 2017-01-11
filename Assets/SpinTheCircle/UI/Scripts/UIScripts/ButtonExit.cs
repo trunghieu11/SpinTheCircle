@@ -10,7 +10,7 @@ namespace AppAdvisory.UI {
     public class ButtonExit : MonoBehaviour {
 
         public void OnClickedExitButton() {
-            PlayerPrefsX.SetBool("_FirstPlay", true);
+            PlayerPrefsX.SetBool(Util.FIRST_PLAY_PREF, true);
             Application.Quit();
         }
     }
