@@ -11,7 +11,6 @@ namespace AppAdvisory.UI {
 
         public void OnClickedExitButton() {
             PlayerPrefsX.SetBool(Util.FIRST_PLAY_PREF, true);
-            PlayerPrefs.SetInt(Util.TOTAL_DIAMOND_PREF, FindObjectOfType<GameLogic>().totalDiamond);
             Application.Quit();
         }
     }

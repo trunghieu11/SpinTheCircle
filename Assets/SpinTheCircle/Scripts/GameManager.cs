@@ -96,6 +96,7 @@ namespace AppAdvisory.SpinTheCircle {
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
                 FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
+                FindObjectOfType<GameLogic>().totalDiamondText.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
             }
         }
         /// <summary>
@@ -116,6 +117,7 @@ namespace AppAdvisory.SpinTheCircle {
                 FindObjectOfType<GameLogic>().tutorialImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().speedUpImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
                 FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
+                FindObjectOfType<GameLogic>().totalDiamondText.rectTransform.anchoredPosition = new Vector3(width, 0, 0);
             }
 
             FindObjectOfType<UIController>().SetLastText(Util.GetLastScore());
@@ -211,7 +213,7 @@ namespace AppAdvisory.SpinTheCircle {
             DOVirtual.Float(+width * 1.5f, 0f, 0.3f,
                 (float f) => {
                     FindObjectOfType<GameLogic>().diamondImage.rectTransform.anchoredPosition = new Vector3(f - width / 2.3f, height / 2.25f, 0);
-                    Debug.Log("width: " + width + " height: " + height);
+                    FindObjectOfType<GameLogic>().totalDiamondText.rectTransform.anchoredPosition = new Vector3(f - width / 2.3f + width / 6f, height / 2.25f, 0);
                 })
                 .SetDelay(0.3f);
 

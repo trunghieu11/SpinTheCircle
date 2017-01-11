@@ -72,7 +72,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// <summary>
         /// diamond counter
         /// </summary>
-        public int totalDiamond;
+        public int totalDiamond = 0;
         /// <summary>
         /// diamond counter text
         /// </summary>
@@ -164,10 +164,13 @@ namespace AppAdvisory.SpinTheCircle {
                     if (ball.rectTransform.localPosition.y < -150) {
                         bool isSameColor = CheckIfBallColorEqualCircleColor();
                         if (!isSameColor) {
+                            PlayerPrefs.SetInt(Util.TOTAL_DIAMOND_PREF, totalDiamond);
                             gameManager.GameOver();
                             ball.rectTransform.DOKill();
                         } else {
                             gameManager.point++;
+                            totalDiamond++;
+                            totalDiamondText.text = totalDiamond.ToString();
                             updateBallSpeed(gameManager.point);
                             DOColorBall();
                         }
@@ -288,13 +291,14 @@ namespace AppAdvisory.SpinTheCircle {
             PrepareImages();
             LoadTotalDiamond();
 
+            totalDiamondText.text = totalDiamond.ToString();
             ball.color = GetSelection().image.color;
         }
         /// <summary>
         /// Load total diamond from db
         /// </summary>
         void LoadTotalDiamond() {
-            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF);
+            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF, 0);
         }
         /// <summary>
         /// All image methods
