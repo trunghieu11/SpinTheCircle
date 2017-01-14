@@ -34,6 +34,9 @@ namespace AppAdvisory.SpinTheCircle {
         public static string MUTED_PREF = "Muted";
         public static string LEADERBOARD_ID_PREF = "__LEADERBOARDID";
 
+        public static int COST_DIAMOND_FOR_CONTINUE = 99;
+        public static int GET_DIAMOND_FROM_ADS = 300;
+
         private static float _width = -1;
         private static float _height = -1;
 

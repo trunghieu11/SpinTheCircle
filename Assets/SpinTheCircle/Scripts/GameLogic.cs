@@ -120,6 +120,16 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         [System.NonSerialized]
         public float speedCircle = 0.05f;
+
+        /// <summary>
+        /// Continue group rectTransform
+        /// </summary>
+        public RectTransform continueGroupRect;
+
+        /// <summary>
+        /// Count number of continue
+        /// </summary>
+        private int _continuePlayCount = 0;
         
         /// <summary>
         /// Create a new list of corlors for this level, randomly : listColorReordered and save it in PlayerPrefsX to use the same list of colors in case of game over
@@ -169,6 +179,7 @@ namespace AppAdvisory.SpinTheCircle {
         public void DOStart() {
             DOOnEnable();
             gameStarted = true;
+            _continuePlayCount = 0;
 
             if (jumpHeight == -1f) {
                 jumpHeight = partParent.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2f;
@@ -182,14 +193,17 @@ namespace AppAdvisory.SpinTheCircle {
                     if (ball.rectTransform.localPosition.y < -150) {
                         bool isSameColor = CheckIfBallColorEqualCircleColor();
                         if (!isSameColor) {
-                            PlayerPrefs.SetInt(Util.TOTAL_DIAMOND_PREF, totalDiamond);
-                            gameManager.GameOver();
-                            ball.rectTransform.DOKill();
+                            if (_continuePlayCount < 1) {
+                                PauseGame();
+                                gameManager.isGameOver = true;
+                            } else {
+                                EndGame();
+                            }
                         } else {
                             gameManager.point++;
                             totalDiamond++;
                             totalDiamondText.text = totalDiamond.ToString();
-                            updateBallSpeed(gameManager.point);
+                            UpdateBallSpeed(gameManager.point);
                             DOColorBall();
                         }
                     }
@@ -199,10 +213,81 @@ namespace AppAdvisory.SpinTheCircle {
                 });
 
             if (Util.FirstPlay()) {
-                DOTween.Pause(partParent);
-                DOTween.Pause(ball.rectTransform);
-                OnDisable();
+                PauseGame();
             }
+        }
+
+        /// <summary>
+        /// Manage continue actions
+        /// </summary>
+        private void ShowContinuePopup() {
+            float width = Util.getWidth();
+
+            continueGroupRect.localPosition = new Vector2(Screen.width * 2f, continueGroupRect.localPosition.y);
+            continueGroupRect.DOLocalMoveX(0, 0.3f);
+        }
+
+        /// <summary>
+        /// Clicked button no thanks
+        /// </summary>
+        public void OnClickedButtonNoThanks() {
+            MoveOutContinuePopup(EndGame);
+        }
+
+        /// <summary>
+        /// Clicked button cost diamond
+        /// </summary>
+        public void OnClickedButtonCostDiamond() {
+            if (totalDiamond >= Util.COST_DIAMOND_FOR_CONTINUE) {
+                totalDiamond -= Util.COST_DIAMOND_FOR_CONTINUE;
+                totalDiamondText.text = totalDiamond.ToString();
+                MoveOutContinuePopup(PlayGame);
+            }
+        }
+
+        /// <summary>
+        /// Clicked button get diamond from ads
+        /// </summary>
+        public void OnClickedButtonGetDiamond() {
+            totalDiamond += Util.GET_DIAMOND_FROM_ADS;
+            totalDiamondText.text = totalDiamond.ToString();
+        }
+
+        /// <summary>
+        /// Move out continue popup
+        /// </summary>
+        public void MoveOutContinuePopup(Action callback) {
+            continueGroupRect.DOLocalMoveX(-Screen.width * 2f, 0.3f)
+                .OnComplete(() => {
+                    callback();
+                });
+        }
+
+        /// <summary>
+        /// End game actions
+        /// </summary>
+        public void EndGame() {
+            PlayerPrefs.SetInt(Util.TOTAL_DIAMOND_PREF, totalDiamond);
+            gameManager.GameOver();
+            ball.rectTransform.DOKill();
+        }
+
+        /// <summary>
+        /// Pause game method
+        /// </summary>
+        private void PauseGame() {
+            DOTween.Pause(partParent);
+            DOTween.Pause(ball.rectTransform);
+            OnDisable();
+        }
+
+        /// <summary>
+        /// Play game method
+        /// </summary>
+        private void PlayGame() {
+            DOTween.Play(partParent);
+            DOTween.Play(ball.rectTransform);
+            DOOnEnable();
         }
         
         /// <summary>
@@ -210,7 +295,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        private void updateBallSpeed(int point) {
+        private void UpdateBallSpeed(int point) {
             float lastTimeScale = DOTween.timeScale;
             if (point >= 60) {
                 DOTween.timeScale = 1.4f;
@@ -256,11 +341,17 @@ namespace AppAdvisory.SpinTheCircle {
             }
 
             if (gameManager.isGameOver) {
-                gameStarted = false;
-                if (rotateTweener != null && rotateTweener.IsPlaying()) {
-                    rotateTweener.Kill();
+                if (_continuePlayCount < 1) {
+                    gameManager.isGameOver = false;
+                    _continuePlayCount++;
+                    ShowContinuePopup();
+                } else {
+                    gameStarted = false;
+                    if (rotateTweener != null && rotateTweener.IsPlaying()) {
+                        rotateTweener.Kill();
+                    }
+                    return;
                 }
-                return;
             }
         }
         
@@ -274,9 +365,7 @@ namespace AppAdvisory.SpinTheCircle {
                     tutorialImage.rectTransform.anchoredPosition = new Vector3(f, 0, 0);
                 })
                 .OnComplete(() => {
-                    DOTween.Play(partParent);
-                    DOTween.Play(ball.rectTransform);
-                    DOOnEnable();
+                    PlayGame();
                 });
         }
         
@@ -322,7 +411,7 @@ namespace AppAdvisory.SpinTheCircle {
         /// Load total diamond from db
         /// </summary>
         void LoadTotalDiamond() {
-            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF, 0);
+            totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF, 100);
         }
         
         /// <summary>
