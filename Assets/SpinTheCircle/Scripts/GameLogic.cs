@@ -28,59 +28,73 @@ namespace AppAdvisory.SpinTheCircle {
         /// Prefab of Circle. Use to create the circle. Each part is a UI Image with a certain fillAmount
         /// </summary>
         public CirclePart circlePrefab;
+        
         /// <summary>
         /// Number of parts in the circle, for the current level
         /// </summary>
         int numOfPart = 12;
+        
         /// <summary>
         /// Number of colors in the circle, for the current level
         /// </summary>
         int numOfColor = 3;
+        
         /// <summary>
         /// Reference to the GameObject who contains all the part of the circle we will spawn
         /// </summary>
         public RectTransform partParent;
+        
         /// <summary>
         /// Reference to the ball Image = player
         /// </summary>
         public Image ball;
+        
         /// <summary>
         /// Reference to all the parts contained in the circle, for the current level
         /// </summary>
         List<CirclePart> allCircles = new List<CirclePart>();
+        
         /// <summary>
         /// Reference to the last color to find, to avoid duplicate check
         /// </summary>
         Color lastColor;
         bool shuffleColorAray = true;
+        
         /// <summary>
         /// Reference to a list of color built for a level
         /// </summary>
         public List<Color> listColorReordered = new List<Color>();
+        
         /// <summary>
         /// Tutorial image
         /// </summary>
         public Image tutorialImage;
+        
         /// <summary>
         /// Speed up image
         /// </summary>
         public Image speedUpImage;
+        
         /// <summary>
         /// diamond image
         /// </summary>
         public Image diamondImage;
+        
         /// <summary>
         /// diamond counter
         /// </summary>
         public int totalDiamond = 0;
+        
         /// <summary>
         /// diamond counter text
         /// </summary>
         public Text totalDiamondText;
+        
         /// <summary>
         /// Check circle is move on and game is started
         /// </summary>
         bool gameStarted = false;
+        
         /// <summary>
         /// The height of the ball jump
         /// </summary>
@@ -95,15 +109,18 @@ namespace AppAdvisory.SpinTheCircle {
                 return _gameManager;
             }
         }
+        
         /// <summary>
         /// ball throw speed
         /// </summary>
         float _ballSpeed = 0.65f;
+        
         /// <summary>
         /// Speed of the circle, in seconds (total time in seconds to make 360 degree rotation), for the current level
         /// </summary>
         [System.NonSerialized]
         public float speedCircle = 0.05f;
+        
         /// <summary>
         /// Create a new list of corlors for this level, randomly : listColorReordered and save it in PlayerPrefsX to use the same list of colors in case of game over
         /// </summary>
@@ -140,6 +157,7 @@ namespace AppAdvisory.SpinTheCircle {
             InputTouch.OnTouchLeft -= OnTouchLeft;
             InputTouch.OnTouchRight -= OnTouchRight;
         }
+
         void OnTouchLeft() {
             DORotateCircle(1);
         }
@@ -186,6 +204,7 @@ namespace AppAdvisory.SpinTheCircle {
                 OnDisable();
             }
         }
+        
         /// <summary>
         /// update ball speed when point increases
         /// </summary>
@@ -244,6 +263,7 @@ namespace AppAdvisory.SpinTheCircle {
                 return;
             }
         }
+        
         /// <summary>
         /// Move out tutorial
         /// </summary>
@@ -259,10 +279,12 @@ namespace AppAdvisory.SpinTheCircle {
                     DOOnEnable();
                 });
         }
+        
         /// <summary>
         /// Reference to the tweener who rotate the circle
         /// </summary>
         Tweener rotateTweener;
+        
         /// <summary>
         /// Start the rotation of the circle. Check in each updates if the ball enter a part of the circle with the same color of him. If we are inside a same color and we go out, that means the player doesn't tap before the ball go out of the part with the same color, so it's game over.
         /// </summary>
@@ -283,6 +305,7 @@ namespace AppAdvisory.SpinTheCircle {
             rotateTweener = partParent.DORotate(Vector3.forward * target, speedCircle, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear);
         }
+        
         /// <summary>
         /// Place the border and the border shadow at the good place
         /// </summary>
@@ -294,12 +317,14 @@ namespace AppAdvisory.SpinTheCircle {
             totalDiamondText.text = totalDiamond.ToString();
             ball.color = GetSelection().image.color;
         }
+        
         /// <summary>
         /// Load total diamond from db
         /// </summary>
         void LoadTotalDiamond() {
             totalDiamond = PlayerPrefs.GetInt(Util.TOTAL_DIAMOND_PREF, 0);
         }
+        
         /// <summary>
         /// All image methods
         /// </summary>
@@ -308,6 +333,7 @@ namespace AppAdvisory.SpinTheCircle {
             PrepareSpeedUpImage();
             PrepareDiamondImage();
         }
+        
         /// <summary>
         /// Initial tutorial image size
         /// </summary>
@@ -315,6 +341,7 @@ namespace AppAdvisory.SpinTheCircle {
             float width = Util.getWidth();
             tutorialImage.rectTransform.sizeDelta = Vector2.right * width * 0.9f + Vector2.up * width * 0.6f;
         }
+        
         /// <summary>
         /// Initial speed up image size
         /// </summary>
@@ -322,6 +349,7 @@ namespace AppAdvisory.SpinTheCircle {
             float width = Util.getWidth();
             speedUpImage.rectTransform.sizeDelta = Vector2.right * width * 0.5f + Vector2.up * width * 0.125f;
         }
+        
         /// <summary>
         /// Initial diamond image size
         /// </summary>
@@ -329,6 +357,7 @@ namespace AppAdvisory.SpinTheCircle {
             float width = Util.getWidth();
             diamondImage.rectTransform.sizeDelta = Vector2.right * width * 0.07f + Vector2.up * width * 0.07f;
         }
+        
         /// <summary>
         /// IMPORTANT ==> It's here we define the levels. Change the formulas if you want. 
         /// </summary>
@@ -336,6 +365,7 @@ namespace AppAdvisory.SpinTheCircle {
             this.numOfColor = 7;
             this.numOfPart = 7;
         }
+        
         /// <summary>
         /// Change the color of the ball = color to find
         /// </summary>
@@ -355,6 +385,7 @@ namespace AppAdvisory.SpinTheCircle {
         CirclePart GetSelection() {
             return allCircles.Aggregate((x, y) => Math.Abs(x.GetMiddleAngle() - 180 - 25) < Math.Abs(y.GetMiddleAngle() - 180 - 25) ? x : y);
         }
+        
         /// <summary>
         /// Check if the player tap at the good moment on the screen, ie. check if the color of the ball = the color of the part of the circle below the ball
         /// </summary>
@@ -376,6 +407,7 @@ namespace AppAdvisory.SpinTheCircle {
                 return false;
             }
         }
+        
         /// <summary>
         /// Method to build the circle. Each part of the circle is an UI Image, type = fill image. We use the fill amout property to create the parts of the circle
         /// </summary>
@@ -403,6 +435,7 @@ namespace AppAdvisory.SpinTheCircle {
                 allCircles.Add(circle);
             }
         }
+        
         /// <summary>
         /// Method to create a new circle = new part of the circle
         /// </summary>
@@ -412,6 +445,7 @@ namespace AppAdvisory.SpinTheCircle {
             var circle = go.GetComponent<CirclePart>();
             return circle;
         }
+        
         /// <summary>
         /// Method to create a new circle = new part of the circle
         /// </summary>

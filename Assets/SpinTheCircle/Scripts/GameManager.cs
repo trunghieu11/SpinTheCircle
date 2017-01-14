@@ -39,22 +39,27 @@ namespace AppAdvisory.SpinTheCircle {
         /// If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
         public string VerySimpleAdsURL = "http://u3d.as/oWD";
+        
         /// <summary>
         /// Number of "play" to show an interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
         public int numberOfPlayToShowInterstitial = 5;
+        
         /// <summary>
         /// to reset the player pref. Use if for debug only!!
         /// </summary>
         public bool RESET_PLAYER_PREF = false;
+        
         /// <summary>
         /// True if game over
         /// </summary>
         public bool isGameOver = false;
+        
         /// <summary>
         /// Text in the center of the screen = number of colors to find to clear the level
         /// </summary>
         public Text levelCenterScreen;
+        
         /// <summary>
         /// Reference to circle parent, to do the animation in and out for transition between level 
         /// </summary>
@@ -68,6 +73,7 @@ namespace AppAdvisory.SpinTheCircle {
             }
         }
         private int m_point;
+        
         /// <summary>
         /// The number of move we have to do to clear this level = the level number
         /// </summary>
@@ -84,6 +90,7 @@ namespace AppAdvisory.SpinTheCircle {
                 return m_point;
             }
         }
+        
         /// <summary>
         /// Clean the memory and place the circleparent at the good place
         /// </summary>
@@ -99,6 +106,7 @@ namespace AppAdvisory.SpinTheCircle {
                 FindObjectOfType<GameLogic>().totalDiamondText.rectTransform.anchoredPosition = new Vector3(5 * width, 0, 0);
             }
         }
+        
         /// <summary>
         /// Clean the memory and place the circleparent at the good place
         /// </summary>
@@ -159,6 +167,7 @@ namespace AppAdvisory.SpinTheCircle {
         public void MoveDone() {
             soundManager.PlayTouch();
         }
+        
         /// <summary>
         /// When a move is done, ie. player tap on the screen and the color of the ball is not equal of the color of the part of the circle below => Game Over. We restart the game and show interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
@@ -178,6 +187,7 @@ namespace AppAdvisory.SpinTheCircle {
             //		FindObjectOfType<GameLogic>().GetComponent<RectTransform>().DOShakePosition(0.30f,10,100,90).OnComplete(() => {
             //		});
         }
+        
         /// <summary>
         /// Animation out of the circle (from center to left)
         /// </summary>
@@ -194,6 +204,7 @@ namespace AppAdvisory.SpinTheCircle {
                     }
                 });
         }
+        
         /// <summary>
         /// Animation in of the circle (from right to center)
         /// </summary>
@@ -227,6 +238,7 @@ namespace AppAdvisory.SpinTheCircle {
                         callback();
                 });
         }
+        
         /// <summary>
         /// If using Very Simple Leaderboard by App Advisory, report the score : http://u3d.as/qxf
         /// </summary>
@@ -237,6 +249,7 @@ namespace AppAdvisory.SpinTheCircle {
 			print("Get very simple leaderboard to use it : http://u3d.as/qxf");
 #endif
         }
+        
         /// <summary>
         /// Show Ads - Interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>

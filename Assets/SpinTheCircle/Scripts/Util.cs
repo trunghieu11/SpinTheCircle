@@ -107,6 +107,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             CleanMemory();
         }
+        
         /// <summary>
         /// Clean the memory
         /// </summary>
@@ -115,12 +116,14 @@ namespace AppAdvisory.SpinTheCircle {
             GC.Collect();
             Application.targetFrameRate = 60;
         }
+        
         /// <summary>
         /// Resturn true if last time we play we lose (= Game Over)
         /// </summary>
         public static bool RestartFromGameOver() {
             return PlayerPrefsX.GetBool(Util.RESTART_FROM_GAMEOVER_PREF, false);
         }
+        
         /// <summary>
         /// Return true if this's the first play
         /// </summary>
@@ -128,6 +131,7 @@ namespace AppAdvisory.SpinTheCircle {
         public static bool FirstPlay() {
             return PlayerPrefsX.GetBool(Util.FIRST_PLAY_PREF, true);
         }
+        
         /// <summary>
         /// get canvas width
         /// </summary>
@@ -138,6 +142,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             return _width;
         }
+        
         /// <summary>
         /// get canvas height
         /// </summary>
