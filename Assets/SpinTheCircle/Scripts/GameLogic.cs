@@ -17,6 +17,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine.Advertisements;
 
 namespace AppAdvisory.SpinTheCircle {
     /// <summary>
@@ -130,6 +131,11 @@ namespace AppAdvisory.SpinTheCircle {
         /// Count number of continue
         /// </summary>
         private int _continuePlayCount = 0;
+
+        /// <summary>
+        /// zone id for ads
+        /// </summary>
+        public string zoneId;
         
         /// <summary>
         /// Create a new list of corlors for this level, randomly : listColorReordered and save it in PlayerPrefsX to use the same list of colors in case of game over
@@ -249,8 +255,32 @@ namespace AppAdvisory.SpinTheCircle {
         /// Clicked button get diamond from ads
         /// </summary>
         public void OnClickedButtonGetDiamond() {
-            totalDiamond += Util.GET_DIAMOND_FROM_ADS;
-            totalDiamondText.text = totalDiamond.ToString();
+            ShowAdPlacement();
+        }
+
+        void ShowAdPlacement() {
+            if (string.IsNullOrEmpty(zoneId)) {
+                zoneId = null;
+            }
+
+            var options = new ShowOptions();
+            options.resultCallback = HandleShowResult;
+            Advertisement.Show(zoneId, options);
+        }
+        void HandleShowResult(ShowResult result) {
+            switch (result) {
+                case ShowResult.Finished:
+                    Debug.Log("Video completed. Offer a reward to the player.");
+                    totalDiamond += Util.GET_DIAMOND_FROM_ADS;
+                    totalDiamondText.text = totalDiamond.ToString();
+                    break;
+                case ShowResult.Skipped:
+                    Debug.LogWarning("Video was skipped.");
+                    break;
+                case ShowResult.Failed:
+                    Debug.LogError("Video failed to show.");
+                    break;
+            }
         }
 
         /// <summary>
