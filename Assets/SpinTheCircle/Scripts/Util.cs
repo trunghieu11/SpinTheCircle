@@ -33,9 +33,12 @@ namespace AppAdvisory.SpinTheCircle {
         public static string RESTART_FROM_GAMEOVER_PREF = "_RestartFromGameOver";
         public static string MUTED_PREF = "Muted";
         public static string LEADERBOARD_ID_PREF = "__LEADERBOARDID";
+        public static string LAST_GET_DIAMOND_PREF = "_LastGetDiamond";
 
         public static int COST_DIAMOND_FOR_CONTINUE = 99;
         public static int GET_DIAMOND_FROM_ADS = 300;
+
+        public static double DIFF_TIME_GET_DIAMOND = 3.0;
 
         private static float _width = -1;
         private static float _height = -1;
@@ -155,6 +158,16 @@ namespace AppAdvisory.SpinTheCircle {
             }
 
             return _height;
+        }
+
+        public static double CalcLastGetDiamond() {
+            DateTime time = DateTime.Now;
+            DateTime lastGetDiamond = new DateTime(PlayerPrefsX.GetLong(LAST_GET_DIAMOND_PREF, 0));
+            return time.Subtract(lastGetDiamond).TotalMinutes;
+        }
+
+        public static bool CanClickGetMoreDiamond() {
+            return CalcLastGetDiamond() >= DIFF_TIME_GET_DIAMOND;
         }
     }
 }

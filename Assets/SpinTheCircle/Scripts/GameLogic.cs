@@ -90,6 +90,16 @@ namespace AppAdvisory.SpinTheCircle {
         /// diamond counter text
         /// </summary>
         public Text totalDiamondText;
+
+        /// <summary>
+        /// Wait 3 mins image
+        /// </summary>
+        public Image wait3MinsImage;
+
+        /// <summary>
+        /// Not enough diamond image
+        /// </summary>
+        public Image notEnoughImage;
         
         /// <summary>
         /// Check circle is move on and game is started
@@ -115,6 +125,8 @@ namespace AppAdvisory.SpinTheCircle {
         /// ball throw speed
         /// </summary>
         float _ballSpeed = 0.65f;
+
+        private bool _getMoreDiamondAvailabe = true;
         
         /// <summary>
         /// Speed of the circle, in seconds (total time in seconds to make 360 degree rotation), for the current level
@@ -227,8 +239,6 @@ namespace AppAdvisory.SpinTheCircle {
         /// Manage continue actions
         /// </summary>
         private void ShowContinuePopup() {
-            float width = Util.getWidth();
-
             continueGroupRect.localPosition = new Vector2(Screen.width * 2f, continueGroupRect.localPosition.y);
             continueGroupRect.DOLocalMoveX(0, 0.3f);
         }
@@ -255,9 +265,14 @@ namespace AppAdvisory.SpinTheCircle {
         /// Clicked button get diamond from ads
         /// </summary>
         public void OnClickedButtonGetDiamond() {
-            ShowAdPlacement();
+            if (_getMoreDiamondAvailabe) {
+                ShowAdPlacement();
+            }
         }
 
+        /// <summary>
+        /// show ads
+        /// </summary>
         void ShowAdPlacement() {
             if (string.IsNullOrEmpty(zoneId)) {
                 zoneId = null;
@@ -267,12 +282,19 @@ namespace AppAdvisory.SpinTheCircle {
             options.resultCallback = HandleShowResult;
             Advertisement.Show(zoneId, options);
         }
+
+
+        /// <summary>
+        /// handle show ads result
+        /// </summary>
+        /// <param name="result"></param>
         void HandleShowResult(ShowResult result) {
             switch (result) {
                 case ShowResult.Finished:
                     Debug.Log("Video completed. Offer a reward to the player.");
                     totalDiamond += Util.GET_DIAMOND_FROM_ADS;
                     totalDiamondText.text = totalDiamond.ToString();
+                    PlayerPrefsX.SetLong(Util.LAST_GET_DIAMOND_PREF, DateTime.Now.Ticks);
                     break;
                 case ShowResult.Skipped:
                     Debug.LogWarning("Video was skipped.");
@@ -382,6 +404,28 @@ namespace AppAdvisory.SpinTheCircle {
                     }
                     return;
                 }
+            }
+
+            CheckButtonStatus();
+        }
+
+        /// <summary>
+        /// Check button cost diamond and get more diamond status
+        /// </summary>
+        private void CheckButtonStatus() {
+            if (totalDiamond >= Util.COST_DIAMOND_FOR_CONTINUE) {
+                notEnoughImage.enabled = false;
+            } else {
+                notEnoughImage.enabled = true;
+            }
+
+            //double diffTime = Util.CalcLastGetDiamond();
+            //Debug.Log("diffTime: " + diffTime);
+            _getMoreDiamondAvailabe = Util.CanClickGetMoreDiamond();
+            if (_getMoreDiamondAvailabe) {
+                wait3MinsImage.enabled = false;
+            } else {
+                wait3MinsImage.enabled = true;
             }
         }
         
