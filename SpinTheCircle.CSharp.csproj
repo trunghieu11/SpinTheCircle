@@ -274,6 +274,7 @@
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonShare.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\ButtonWatchAd.cs" />
     <Compile Include="Assets\SpinTheCircle\UI\Scripts\UIScripts\UIController.cs" />
+    <Compile Include="Assets\Very_Simple_Leaderboard\EditorScripts\OpenMoreGames.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Exemple\Scripts\OpenLeaderboard.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Exemple\Scripts\PostScore.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Exemple\Scripts\ReloadScene.cs" />

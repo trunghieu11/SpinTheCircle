@@ -32,7 +32,7 @@ namespace AppAdvisory.social
 		public static void CreateLeadertboardInits()
 		{
 			GameObject gameObject = new GameObject("LeaderboardInit");
-			LeaderboardInit a = gameObject.AddComponent<LeaderboardInit>();
+			LeaderboardInit a = gameObject.AddComponent<LeaderboardInit>(); 
 			string[] guids = AssetDatabase.FindAssets("LEADERBOARD_SETTING");
 
 			#if UNITY_5_3_OR_NEWER

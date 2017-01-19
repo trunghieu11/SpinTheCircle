@@ -151,6 +151,8 @@
     <Compile Include="Assets\PlayServicesResolver\Editor\SampleDependencies.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\SettingsDialog.cs" />
     <Compile Include="Assets\SpinTheCircle\Editor\Welcome.cs" />
+    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\Autorun.cs" />
+    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\DGChecker.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDInspectorGUI.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDUtility.cs" />
     <Compile Include="Assets\Very_Simple_Leaderboard\Editor\WelcomeVerySimpleLeaderboard.cs" />

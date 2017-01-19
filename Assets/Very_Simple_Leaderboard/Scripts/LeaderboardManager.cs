@@ -12,7 +12,6 @@ using UnityEngine;
 using System;
 using System.Collections;
 using UnityEngine.SocialPlatforms;
-using AppAdvisory.SpinTheCircle;
 
 #if UNITY_ANDROID && APPADVISORY_LEADERBOARD && VSLEADERBOARD_ENABLE_ANDROID
 using GooglePlayGames;
@@ -35,12 +34,12 @@ namespace AppAdvisory.social
 			get
 			{
 //				return Very_Simple_Leaderboard.GPGSIds.leaderboard_leaderboard;
-				return PlayerPrefs.GetString(Util.LEADERBOARD_ID_PREF);
+				return PlayerPrefs.GetString("__LEADERBOARDID");
 			}
 			set
 			{
 				Debug.Log("setting leaderboard id = " + value.ToString());
-				PlayerPrefs.SetString(Util.LEADERBOARD_ID_PREF, value);
+				PlayerPrefs.SetString("__LEADERBOARDID",value);
 				PlayerPrefs.Save();
 			}
 		}
