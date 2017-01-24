@@ -13,7 +13,7 @@
 using UnityEngine;
 using System.Collections;
 #if APPADVISORY_LEADERBOARD
-using AppAdvisory.social;
+//using AppAdvisory.social;
 #endif
 
 namespace AppAdvisory.UI
@@ -30,7 +30,7 @@ namespace AppAdvisory.UI
 		public void OnClickedOpenLeaderboard()
 		{
 			#if APPADVISORY_LEADERBOARD
-			LeaderboardManager.ShowLeaderboardUI();
+			//LeaderboardManager.ShowLeaderboardUI();
 			#else
 			Debug.LogWarning("OnClickedOpenLeaderboard : works only on mobile (iOS & Android), with Very Simple Leaderboard : http://u3d.as/qxf");
 			#endif
