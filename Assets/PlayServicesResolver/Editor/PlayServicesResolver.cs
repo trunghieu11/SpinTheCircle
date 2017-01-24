@@ -34,13 +34,6 @@ namespace GooglePlayServices
     public class PlayServicesResolver : AssetPostprocessor
     {
         /// <summary>
-        /// The name of the current resolver.
-        /// </summary>
-        /// <remarks>
-        /// This should be updated when a new revision is created.
-        /// </remarks>
-        private static string CurrentResolverName = "ResolverVer1_1";
-        /// <summary>
         /// The instance to the play services support object.
         /// </summary>
         private static PlayServicesSupport svcSupport;
@@ -51,6 +44,36 @@ namespace GooglePlayServices
         private static IResolver _resolver;
 
         /// <summary>
+        /// Whether the resolver executed on the last Update() event.
+        /// This is used to de-duplicate resolutions when assets change *and* C# classes get
+        /// reloaded i.e The following occurs:
+        /// * Load classes - schedule resolve
+        /// * Update - Resolve
+        /// * OnPostprocessAllAssets - Resolve <= Prevents this case.
+        /// </summary>
+        private static bool resolvedOnUpdate = false;
+
+        /// <summary>
+        /// Seconds to wait until re-resolving dependencies after the bundle ID has changed.
+        /// </summary>
+        private const int bundleUpdateDelaySeconds = 3;
+
+        /// <summary>
+        /// Last time the bundle ID was checked.
+        /// </summary>
+        private static DateTime lastBundleIdPollTime = DateTime.Now;
+
+        /// <summary>
+        /// Last bundle ID value.
+        /// </summary>
+        private static string lastBundleId = PlayerSettings.bundleIdentifier;
+
+        /// <summary>
+        /// Last value of bundle ID since the last time OnBundleId() was called.
+        /// </summary>
+        private static string bundleId = "";
+
+        /// <summary>
         /// Initializes the <see cref="GooglePlayServices.PlayServicesResolver"/> class.
         /// </summary>
         static PlayServicesResolver()
@@ -58,7 +81,13 @@ namespace GooglePlayServices
             svcSupport = PlayServicesSupport.CreateInstance(
                 "PlayServicesResolver",
                 EditorPrefs.GetString("AndroidSdkRoot"),
-                "ProjectSettings");
+                "ProjectSettings",
+                logger: UnityEngine.Debug.Log);
+
+            EditorApplication.update -= AutoResolve;
+            EditorApplication.update += AutoResolve;
+            EditorApplication.update -= PollBundleId;
+            EditorApplication.update += PollBundleId;
         }
 
         /// <summary>
@@ -79,6 +108,7 @@ namespace GooglePlayServices
             {
                 _resolver = resolverImpl;
             }
+            Debug.Log("Resolver version is now: " + _resolver.Version());
             return _resolver;
         }
 
@@ -86,15 +116,10 @@ namespace GooglePlayServices
         /// Gets the resolver.
         /// </summary>
         /// <value>The resolver.</value>
-        static IResolver Resolver
+        public static IResolver Resolver
         {
             get
             {
-                if (_resolver == null)
-                {
-                    // create the latest resolver known.
-                    _resolver = Activator.CreateInstance("GooglePlayServices", CurrentResolverName) as IResolver;
-                }
                 return _resolver;
             }
         }
@@ -112,18 +137,93 @@ namespace GooglePlayServices
                                            string[] movedAssets,
                                            string[] movedFromAssetPaths)
         {
-            if (!Resolver.ShouldAutoResolve(importedAssets, deletedAssets,
-                    movedAssets, movedFromAssetPaths))
+            if (Resolver.ShouldAutoResolve(importedAssets, deletedAssets,
+                    movedAssets, movedFromAssetPaths) && !resolvedOnUpdate)
             {
-                return;
+                AutoResolve();
             }
+        }
 
-            Resolver.DoResolution(svcSupport,
-                "Assets/Plugins/Android",
-                HandleOverwriteConfirmation);
+        /// <summary>
+        /// Resolve dependencies if auto-resolution is enabled.
+        /// </summary>
+        private static void AutoResolve()
+        {
+            if (Resolver.AutomaticResolutionEnabled() && !resolvedOnUpdate)
+            {
+                // Prevent resolution on the call to OnPostprocessAllAssets().
+                // This method is called on the next Update event then removed from the Update
+                // list.
+                resolvedOnUpdate = true;
+                Resolve();
+            }
+            else
+            {
+                EditorApplication.update -= AutoResolve;
+                // Allow resolution on calls to OnPostprocessAllAssets().
+                resolvedOnUpdate = false;
+            }
+        }
 
+        /// <summary>
+        /// If the user changes the bundle ID, perform resolution again.
+        /// </summary>
+        private static void PollBundleId()
+        {
+            string currentBundleId = PlayerSettings.bundleIdentifier;
+            DateTime currentPollTime = DateTime.Now;
+            if (currentBundleId != bundleId)
+            {
+                // If the bundle ID setting hasn't changed for a while.
+                if (currentBundleId == lastBundleId)
+                {
+                    if (currentPollTime.Subtract(lastBundleIdPollTime).Seconds >=
+                        bundleUpdateDelaySeconds)
+                    {
+                        if (Resolver.AutomaticResolutionEnabled())
+                        {
+                            bundleId = currentBundleId;
+                            if (DeleteFiles(Resolver.OnBundleId(bundleId))) Resolve();
+                        }
+                    }
+                }
+                else
+                {
+                    lastBundleId = currentBundleId;
+                    lastBundleIdPollTime = currentPollTime;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Delete the specified array of files and directories.
+        /// </summary>
+        /// <param name="filenames">Array of files or directories to delete.</param>
+        /// <returns>true if files are deleted, false otherwise.</returns>
+        private static bool DeleteFiles(string[] filenames)
+        {
+            if (filenames == null) return false;
+            foreach (string artifact in filenames)
+            {
+                PlayServicesSupport.DeleteExistingFileOrDirectory(artifact);
+            }
             AssetDatabase.Refresh();
-            Debug.Log("Android Jar Dependencies: Resolution Complete");
+            return true;
+        }
+
+        /// <summary>
+        /// Resolve dependencies.
+        /// </summary>
+        /// <param name="resolutionComplete">Delegate called when resolution is complete.</param>
+        private static void Resolve(System.Action resolutionComplete = null)
+        {
+            DeleteFiles(Resolver.OnBundleId(PlayerSettings.bundleIdentifier));
+            Resolver.DoResolution(svcSupport, "Assets/Plugins/Android",
+                                  HandleOverwriteConfirmation,
+                                  () => {
+                                      AssetDatabase.Refresh();
+                                      if (resolutionComplete != null) resolutionComplete();
+                                  });
         }
 
         /// <summary>
@@ -141,11 +241,8 @@ namespace GooglePlayServices
         [MenuItem("Assets/Google Play Services/Resolve Client Jars")]
         public static void MenuResolve()
         {
-            Resolver.DoResolution(svcSupport, "Assets/Plugins/Android", HandleOverwriteConfirmation);
-
-            AssetDatabase.Refresh();
-            EditorUtility.DisplayDialog("Android Jar Dependencies",
-                "Resolution Complete", "OK");
+            Resolve(() => { EditorUtility.DisplayDialog("Android Jar Dependencies",
+                                                        "Resolution Complete", "OK"); });
         }
 
         /// <summary>
@@ -154,7 +251,7 @@ namespace GooglePlayServices
         /// <returns><c>true</c>, if overwrite confirmation was handled, <c>false</c> otherwise.</returns>
         /// <param name="oldDep">Old dependency.</param>
         /// <param name="newDep">New dependency replacing old.</param>
-        static bool HandleOverwriteConfirmation(Dependency oldDep, Dependency newDep)
+        public static bool HandleOverwriteConfirmation(Dependency oldDep, Dependency newDep)
         {
             // Don't prompt overwriting the same version, just do it.
             if (oldDep.BestVersion != newDep.BestVersion)

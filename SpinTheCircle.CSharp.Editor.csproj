@@ -97,6 +97,15 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="AssetStoreTools (1)">
+      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreTools (1).dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreTools">
+      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreTools.dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreToolsExtra">
+      <HintPath>Assets\AssetStoreTools\Editor\AssetStoreToolsExtra.dll</HintPath>
+    </Reference>
     <Reference Include="DOTween">
       <HintPath>Assets\Demigiant\DOTween\DOTween.dll</HintPath>
     </Reference>
@@ -123,41 +132,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GooglePlayGames\Editor\CocoaPodHelper.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSAndroidSetupUI.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSDependencies.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSDocsUI.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSIOSSetupUI.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSInstructionWindow.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSPostBuild.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSProjectSettings.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSStrings.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSUpgrader.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\GPGSUtil.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\NearbyConnectionUI.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\PlistBuddyHelper.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Elements.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Lexer.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Objects.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\PBXProject.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Parser.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Sections.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Serializer.cs" />
-    <Compile Include="Assets\GooglePlayGames\Editor\xcode\Utils.cs" />
+    <Compile Include="Assets\GoogleMobileAds\Editor\CocoaPodHelper.cs" />
+    <Compile Include="Assets\GoogleMobileAds\Editor\PostProcessor.cs" />
+    <Compile Include="Assets\PlayServicesResolver\Editor\AdMobDependencies.cs" />
+    <Compile Include="Assets\PlayServicesResolver\Editor\CommandLine.cs" />
+    <Compile Include="Assets\PlayServicesResolver\Editor\CommandLineDialog.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\DefaultResolver.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\IResolver.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\PlayServicesResolver.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\ResolverVer1_1.cs" />
+    <Compile Include="Assets\PlayServicesResolver\Editor\ResolverVer1_2.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\SampleDependencies.cs" />
     <Compile Include="Assets\PlayServicesResolver\Editor\SettingsDialog.cs" />
+    <Compile Include="Assets\PlayServicesResolver\Editor\TextAreaDialog.cs" />
     <Compile Include="Assets\SpinTheCircle\Editor\Welcome.cs" />
-    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\Autorun.cs" />
-    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\DGChecker.cs" />
-    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDInspectorGUI.cs" />
-    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\LDUtility.cs" />
-    <Compile Include="Assets\Very_Simple_Leaderboard\Editor\WelcomeVerySimpleLeaderboard.cs" />
-    <Compile Include="Assets\Very_Simple_Share\Editor\AutorunVS.cs" />
-    <Compile Include="Assets\Very_Simple_Share\Editor\WelcomeVerySimpleShare.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />
@@ -166,11 +154,7 @@
     <None Include="Assets\Demigiant\DOTween\DOTween50.xml" />
     <None Include="Assets\Demigiant\DOTween\Editor\DOTweenEditor.XML" />
     <None Include="Assets\Demigiant\DOTween\readme.txt" />
-    <None Include="Assets\GooglePlayGames\Editor\Podfile.txt" />
-    <None Include="Assets\GooglePlayGames\Editor\template-AndroidManifest.txt" />
-    <None Include="Assets\GooglePlayGames\Editor\template-Constants.txt" />
-    <None Include="Assets\GooglePlayGames\Editor\template-GameInfo.txt" />
-    <None Include="Assets\Plugins\Android\MainLibProj\AndroidManifest.xml" />
+    <None Include="Assets\Plugins\Android\GoogleMobileAdsPlugin\AndroidManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
