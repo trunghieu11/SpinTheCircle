@@ -94,6 +94,8 @@ namespace AppAdvisory.SpinTheCircle {
 
         InterstitialAd fullAdmob;
 
+        BannerView bannerAdmob;
+
         /// <summary>
         /// Clean the memory and place the circleparent at the good place
         /// </summary>
@@ -137,6 +139,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             FindObjectOfType<ButtonMute>().SetSoundState();
 
+            RequestBannerAd();
             RequestFullAd();
         }
 
@@ -255,6 +258,12 @@ namespace AppAdvisory.SpinTheCircle {
 #endif
         }
 
+        void RequestBannerAd() {
+            string bannerId = "ca-app-pub-7722608051498261/3189207031";
+            bannerAdmob = new BannerView(bannerId, AdSize.SmartBanner, AdPosition.Bottom);
+            AdRequest adRequest = new AdRequest.Builder().Build();
+            bannerAdmob.LoadAd(adRequest);
+        }
 
         void RequestFullAd() {
             string fullId = "ca-app-pub-7722608051498261/7101042638";
