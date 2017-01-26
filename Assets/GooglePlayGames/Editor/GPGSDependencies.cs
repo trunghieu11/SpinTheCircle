@@ -14,17 +14,15 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.Editor
-{
+namespace GooglePlayGames.Editor {
 
-using System;
-using System.Collections.Generic;
-using UnityEditor;
+    using System;
+    using System.Collections.Generic;
+    using UnityEditor;
 
-/// AdMob dependencies file.
-[InitializeOnLoad]
-public class GPGSDependencies : AssetPostprocessor
-{
+    /// AdMob dependencies file.
+    [InitializeOnLoad]
+    public class GPGSDependencies : AssetPostprocessor {
 #if UNITY_ANDROID
         /// <summary>Instance of the PlayServicesSupport resolver</summary>
         public static object svcSupport;
@@ -76,8 +74,7 @@ public class GPGSDependencies : AssetPostprocessor
             });
 
             // if google+ is needed, add it
-            if (GameInfo.RequireGooglePlus())
-            {
+            if (GameInfo.RequireGooglePlus()) {
                 Google.VersionHandler.InvokeInstanceMethod(
                         svcSupport, "DependOn",
                         new object[] { "com.google.android.gms", "play-services-plus",
@@ -133,6 +130,6 @@ public class GPGSDependencies : AssetPostprocessor
                 }
             }
         }
-}
+    }
 
 }

@@ -15,6 +15,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using DG.Tweening;
+using GoogleMobileAds.Api;
 #if UNITY_5_3
 using UnityEngine.SceneManagement;
 #endif
@@ -90,7 +91,11 @@ namespace AppAdvisory.SpinTheCircle {
                 return m_point;
             }
         }
-        
+
+        InterstitialAd fullAdmob;
+
+        BannerView bannerAdmob;
+
         /// <summary>
         /// Clean the memory and place the circleparent at the good place
         /// </summary>
@@ -133,6 +138,9 @@ namespace AppAdvisory.SpinTheCircle {
             FindObjectOfType<UIController>().DOAnimIN();
 
             FindObjectOfType<ButtonMute>().SetSoundState();
+
+            RequestBannerAd();
+            RequestFullAd();
         }
 
         /// <summary>
@@ -249,56 +257,37 @@ namespace AppAdvisory.SpinTheCircle {
 			print("Get very simple leaderboard to use it : http://u3d.as/qxf");
 #endif
         }
-        
+        void RequestBannerAd() {
+            string bannerId = "ca-app-pub-7722608051498261/3189207031";
+            bannerAdmob = new BannerView(bannerId, AdSize.SmartBanner, AdPosition.Bottom);
+            AdRequest adRequest = new AdRequest.Builder().Build();
+            bannerAdmob.LoadAd(adRequest);
+        }
+
+        void RequestFullAd() {
+            string fullId = "ca-app-pub-7722608051498261/7101042638";
+            fullAdmob = new InterstitialAd(fullId);
+            AdRequest adRequest = new AdRequest.Builder().Build();
+            fullAdmob.LoadAd(adRequest);
+        }
+
         /// <summary>
         /// Show Ads - Interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
         public void ShowAds() {
-            int count = PlayerPrefs.GetInt(Util.GAMEOVER_COUNT_PREF, 0);
+            int count = PlayerPrefs.GetInt("GAMEOVER_COUNT", 0);
             count++;
-            PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
-            PlayerPrefs.Save();
 
-#if APPADVISORY_ADS
-			if(count > numberOfPlayToShowInterstitial)
-			{
-#if UNITY_EDITOR
-			print("count = " + count + " > numberOfPlayToShowINterstitial = " + numberOfPlayToShowInterstitial);
-#endif
-			if(AdsManager.instance.IsReadyInterstitial())
-			{
-#if UNITY_EDITOR
-				print("AdsManager.instance.IsReadyInterstitial() == true ----> SO ====> set count = 0 AND show interstial");
-#endif
-				PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF,0);
-				AdsManager.instance.ShowInterstitial();
-			}
-			else
-			{
-#if UNITY_EDITOR
-				print("AdsManager.instance.IsReadyInterstitial() == false");
-#endif
-			}
+            if (count > numberOfPlayToShowInterstitial) {
+                if (fullAdmob.IsLoaded()) {
+                    PlayerPrefs.SetInt("GAMEOVER_COUNT", 0);
+                    fullAdmob.Show();
+                }
 
-		}
-		else
-		{
-			PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
-		}
-		PlayerPrefs.Save();
-#else
-            if (count >= numberOfPlayToShowInterstitial) {
-                Debug.LogWarning("To show ads, please have a look to Very Simple Ad on the Asset Store, or go to this link: " + VerySimpleAdsURL);
-                Debug.LogWarning("Very Simple Ad is already implemented in this asset");
-                Debug.LogWarning("Just import the package and you are ready to use it and monetize your game!");
-                Debug.LogWarning("Very Simple Ad : " + VerySimpleAdsURL);
-                PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, 0);
             } else {
-                PlayerPrefs.SetInt(Util.GAMEOVER_COUNT_PREF, count);
+                PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
             }
             PlayerPrefs.Save();
-#endif
-
         }
     }
 }
