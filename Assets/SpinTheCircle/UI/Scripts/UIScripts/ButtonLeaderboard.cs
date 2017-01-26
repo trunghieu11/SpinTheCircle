@@ -29,11 +29,11 @@ namespace AppAdvisory.UI
 		/// </summary>
 		public void OnClickedOpenLeaderboard()
 		{
-			#if APPADVISORY_LEADERBOARD
-			LeaderboardManager.ShowLeaderboardUI();
-			#else
+#if APPADVISORY_LEADERBOARD
+            LeaderboardManager.ShowLeaderboardUI();
+#else
 			Debug.LogWarning("OnClickedOpenLeaderboard : works only on mobile (iOS & Android), with Very Simple Leaderboard : http://u3d.as/qxf");
-			#endif
-		}
+#endif
+        }
 	}
 }
