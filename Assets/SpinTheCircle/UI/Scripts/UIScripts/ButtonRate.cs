@@ -39,8 +39,6 @@ namespace AppAdvisory.UI
 			#endif
 
 			Application.OpenURL(URL);
-
-
 		}
 	}
 }
