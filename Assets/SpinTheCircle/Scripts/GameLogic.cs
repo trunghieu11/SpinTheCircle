@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.Advertisements;
+//using UnityEngine.Advertisements;
 
 namespace AppAdvisory.SpinTheCircle {
     /// <summary>
