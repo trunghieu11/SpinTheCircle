@@ -54,8 +54,8 @@ namespace AppAdvisory.social
 		/// </summary>
 		public static void Init()
 		{
-			
-			#if UNITY_IOS
+
+#if UNITY_IOS
 			try
 			{
 			Social.localUser.Authenticate (ProcessAuthentication);
@@ -64,25 +64,24 @@ namespace AppAdvisory.social
 			{
 			Debug.Log("------ Authenticate - EXCEPTION : " + e.ToString());
 			}
-			#endif
+#endif
 
-			#if UNITY_ANDROID && APPADVISORY_LEADERBOARD && VSLEADERBOARD_ENABLE_ANDROID
+#if UNITY_ANDROID && APPADVISORY_LEADERBOARD && VSLEADERBOARD_ENABLE_ANDROID
 
-//			if(!IsInitialized())
-//			{
-				// recommended for debugging:
-				PlayGamesPlatform.DebugLogEnabled = true;
+            if (!IsInitialized()) {
+                // recommended for debugging:
+                PlayGamesPlatform.DebugLogEnabled = true;
 				// Activate the Google Play Games platform
 				PlayGamesPlatform.Activate();
 
 				AuthAndroid();
-//			}
+            }
 
-			#endif
+#endif
 
 
 
-		}
+        }
 
 		public static void AuthAndroid()
 		{

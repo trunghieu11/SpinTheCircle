@@ -15,7 +15,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using DG.Tweening;
-using GoogleMobileAds.Api;
+//using GoogleMobileAds.Api;
 #if UNITY_5_3
 using UnityEngine.SceneManagement;
 #endif
@@ -92,9 +92,9 @@ namespace AppAdvisory.SpinTheCircle {
             }
         }
 
-        InterstitialAd fullAdmob;
+        //InterstitialAd fullAdmob;
 
-        BannerView bannerAdmob;
+        //BannerView bannerAdmob;
 
         /// <summary>
         /// Clean the memory and place the circleparent at the good place
@@ -139,8 +139,8 @@ namespace AppAdvisory.SpinTheCircle {
 
             FindObjectOfType<ButtonMute>().SetSoundState();
 
-            RequestBannerAd();
-            RequestFullAd();
+            //RequestBannerAd();
+            //RequestFullAd();
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace AppAdvisory.SpinTheCircle {
 
             ReportScoreToLeaderboard(point);
 
-            ShowAds();
+            //ShowAds();
 
             Util.SetLastScore(point);
 
@@ -252,42 +252,44 @@ namespace AppAdvisory.SpinTheCircle {
         /// </summary>
         void ReportScoreToLeaderboard(int p) {
 #if APPADVISORY_LEADERBOARD
-            LeaderboardManager.ReportScore(p);
+            if (LeaderboardManager.IsInitialized()) {
+                LeaderboardManager.ReportScore(p);
+            }
 #else
 			print("Get very simple leaderboard to use it : http://u3d.as/qxf");
 #endif
         }
-        void RequestBannerAd() {
-            string bannerId = "ca-app-pub-7722608051498261/3189207031";
-            bannerAdmob = new BannerView(bannerId, AdSize.SmartBanner, AdPosition.Bottom);
-            AdRequest adRequest = new AdRequest.Builder().Build();
-            bannerAdmob.LoadAd(adRequest);
-        }
+        //void RequestBannerAd() {
+        //    string bannerId = "ca-app-pub-7722608051498261/3189207031";
+        //    bannerAdmob = new BannerView(bannerId, AdSize.SmartBanner, AdPosition.Bottom);
+        //    AdRequest adRequest = new AdRequest.Builder().Build();
+        //    bannerAdmob.LoadAd(adRequest);
+        //}
 
-        void RequestFullAd() {
-            string fullId = "ca-app-pub-7722608051498261/7101042638";
-            fullAdmob = new InterstitialAd(fullId);
-            AdRequest adRequest = new AdRequest.Builder().Build();
-            fullAdmob.LoadAd(adRequest);
-        }
+        //void RequestFullAd() {
+        //    string fullId = "ca-app-pub-7722608051498261/7101042638";
+        //    fullAdmob = new InterstitialAd(fullId);
+        //    AdRequest adRequest = new AdRequest.Builder().Build();
+        //    fullAdmob.LoadAd(adRequest);
+        //}
 
         /// <summary>
         /// Show Ads - Interstitial. If you want to monetize this game, get VERY SIMPLE ADS at this URL: http://u3d.as/oWD
         /// </summary>
-        public void ShowAds() {
-            int count = PlayerPrefs.GetInt("GAMEOVER_COUNT", 0);
-            count++;
+        //public void ShowAds() {
+        //    int count = PlayerPrefs.GetInt("GAMEOVER_COUNT", 0);
+        //    count++;
 
-            if (count > numberOfPlayToShowInterstitial) {
-                if (fullAdmob.IsLoaded()) {
-                    PlayerPrefs.SetInt("GAMEOVER_COUNT", 0);
-                    fullAdmob.Show();
-                }
+        //    if (count > numberOfPlayToShowInterstitial) {
+        //        if (fullAdmob.IsLoaded()) {
+        //            PlayerPrefs.SetInt("GAMEOVER_COUNT", 0);
+        //            fullAdmob.Show();
+        //        }
 
-            } else {
-                PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
-            }
-            PlayerPrefs.Save();
-        }
+        //    } else {
+        //        PlayerPrefs.SetInt("GAMEOVER_COUNT", count);
+        //    }
+        //    PlayerPrefs.Save();
+        //}
     }
 }

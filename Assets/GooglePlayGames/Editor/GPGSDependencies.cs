@@ -14,15 +14,17 @@
 //    limitations under the License.
 // </copyright>
 
-namespace GooglePlayGames.Editor {
+namespace GooglePlayGames.Editor
+{
 
-    using System;
-    using System.Collections.Generic;
-    using UnityEditor;
+using System;
+using System.Collections.Generic;
+using UnityEditor;
 
-    /// AdMob dependencies file.
-    [InitializeOnLoad]
-    public class GPGSDependencies : AssetPostprocessor {
+/// AdMob dependencies file.
+[InitializeOnLoad]
+public class GPGSDependencies : AssetPostprocessor
+{
 #if UNITY_ANDROID
         /// <summary>Instance of the PlayServicesSupport resolver</summary>
         public static object svcSupport;
@@ -73,23 +75,6 @@ namespace GooglePlayGames.Editor {
                         {"packageIds", new string[] { "extra-google-m2repository" } }
             });
 
-            // if google+ is needed, add it
-            if (GameInfo.RequireGooglePlus()) {
-                Google.VersionHandler.InvokeInstanceMethod(
-                        svcSupport, "DependOn",
-                        new object[] { "com.google.android.gms", "play-services-plus",
-                         PluginVersion.PlayServicesVersionConstraint },
-                        namedArgs: new Dictionary<string, object>() {
-                        {"packageIds", new string[] { "extra-google-m2repository" } }
-                });
-            }
-
-            Google.VersionHandler.InvokeInstanceMethod(
-                svcSupport, "DependOn",
-                new object[] { "com.android.support", "support-v4", "23.1+" },
-                namedArgs: new Dictionary<string, object>() {
-                    {"packageIds", new string[] { "extra-android-m2repository" } }
-                });
 #elif UNITY_IOS && !NO_GPGS
             /*
             *
@@ -130,6 +115,6 @@ namespace GooglePlayGames.Editor {
                 }
             }
         }
-    }
+}
 
 }

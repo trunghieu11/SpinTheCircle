@@ -33,6 +33,7 @@ namespace AppAdvisory.SpinTheCircle {
         public static string RESTART_FROM_GAMEOVER_PREF = "_RestartFromGameOver";
         public static string MUTED_PREF = "Muted";
         public static string LEADERBOARD_ID_PREF = "__LEADERBOARDID";
+        public static string LEADERBOARD_SETTING = "LEADERBOARD_SETTING";
         public static string LAST_GET_DIAMOND_PREF = "_LastGetDiamond";
 
         public static int COST_DIAMOND_FOR_CONTINUE = 99;
